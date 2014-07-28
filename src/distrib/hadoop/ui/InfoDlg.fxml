@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="infoDlg" minHeight="176.0" minWidth="430.0" onMouseDragged="#windowDragged" onMousePressed="#windowPressed" prefHeight="176.0" prefWidth="498.0" styleClass="background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="distrib.hadoop.ui.InfoDlgController">
+  <children>
+    <AnchorPane id="anchorPane1" prefHeight="86.0" prefWidth="436.0" styleClass="top-segment" AnchorPane.bottomAnchor="57.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
+      <children>
+        <Label fx:id="infoLabel" layoutX="29.0" layoutY="22.0" prefWidth="451.5" styleClass="profileTitle" text="Please drag or add host to NameNode and DataNodes first." wrapText="true">
+          <font>
+            <Font size="20.0" fx:id="x1" />
+          </font>
+        </Label>
+      </children>
+    </AnchorPane>
+    <HBox id="HBox" alignment="CENTER" prefHeight="31.0" prefWidth="71.0" spacing="20.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="347.5" AnchorPane.rightAnchor="17.5">
+      <children>
+        <Button fx:id="okBtn" defaultButton="true" disable="false" font="$x1" maxHeight="2.147483647E9" prefHeight="50.0" prefWidth="205.0" text="Ok" HBox.hgrow="ALWAYS" />
+      </children>
+    </HBox>
+    <Button id="window-close" layoutX="461.0" layoutY="5.0" minHeight="19.0" mnemonicParsing="false" onAction="#windowClosePressed" prefHeight="19.0" prefWidth="20.0" />
+  </children>
+  <stylesheets>
+    <URL value="@Dialog.css" />
+  </stylesheets>
+</AnchorPane>

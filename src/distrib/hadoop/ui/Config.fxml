@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="configPane" minHeight="296.0" minWidth="430.0" onMouseDragged="#windowDragged" onMousePressed="#windowPressed" prefHeight="296.0" prefWidth="436.0" styleClass="background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="distrib.hadoop.ui.ConfigController">
+  <children>
+    <AnchorPane id="anchorPane1" prefHeight="206.0" prefWidth="436.0" styleClass="top-segment" AnchorPane.bottomAnchor="57.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
+      <children>
+        <GridPane id="GridPane" hgap="15.0" prefWidth="405.0" vgap="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+          <children>
+            <Label fx:id="titleLabel" styleClass="profileTitle" text="Please select the file to upload." GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
+              <font>
+                <Font size="20.0" fx:id="x1" />
+              </font>
+            </Label>
+            <Label fx:id="fileLabel" font="$x1" text="File:" GridPane.columnIndex="0" GridPane.rowIndex="1">
+              <GridPane.margin>
+                <Insets top="2.0" fx:id="x3" />
+              </GridPane.margin>
+            </Label>
+            <TextField fx:id="fileText" editable="true" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="uploadLabel" font="$x1" text="UploadPath:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="2" />
+            <TextField fx:id="pathText" minWidth="200.0" prefWidth="327.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+            <Button fx:id="browseBtn" defaultButton="true" disable="false" font="$x1" maxHeight="2.147483647E9" prefHeight="31.0" prefWidth="53.0" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+          </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="94.0" minWidth="60.0" prefWidth="78.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="339.0" minWidth="10.0" prefWidth="242.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="339.0" minWidth="10.0" prefWidth="53.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints maxHeight="21.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+        </GridPane>
+        <ProgressBar fx:id="progressbar" layoutX="0.0" layoutY="196.0" prefWidth="436.0" progress="0.0" visible="false" />
+      </children>
+    </AnchorPane>
+    <HBox id="HBox" alignment="CENTER" prefHeight="31.0" prefWidth="227.0" spacing="20.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="255.5" AnchorPane.rightAnchor="17.5">
+      <children>
+        <Button fx:id="okBtn" defaultButton="true" disable="false" font="$x1" maxHeight="2.147483647E9" prefHeight="50.0" prefWidth="205.0" text="Ok" HBox.hgrow="ALWAYS" />
+        <Button fx:id="cancelBtn" defaultButton="true" font="$x1" maxHeight="2.147483647E9" prefHeight="50.0" prefWidth="205.0" text="Cacel" HBox.hgrow="ALWAYS" />
+      </children>
+    </HBox>
+    <Button id="window-close" layoutX="399.0" layoutY="7.0" minHeight="19.0" mnemonicParsing="false" onAction="#windowClosePressed" prefHeight="19.0" prefWidth="20.0" />
+  </children>
+  <stylesheets>
+    <URL value="@Dialog.css" />
+  </stylesheets>
+</AnchorPane>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="wizardPane" minWidth="500.0" onMouseDragged="#windowDragged" onMousePressed="#windowPressed" prefHeight="390.0" prefWidth="500.0" styleClass="background" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="distrib.hadoop.ui.WizardController">
+  <children>
+    <StackPane id="wizardStatck" fx:id="wizardStack" layoutY="33.0" prefHeight="292.0" prefWidth="500.0" styleClass="top-segment">
+      <children>
+        <GridPane id="GridPane" fx:id="loginPage" hgap="10.0" prefHeight="163.5" prefWidth="397.0" vgap="10.0">
+          <children>
+            <Label fx:id="passwdTile" styleClass="profileTitle" text="Please input the username and password for the hosts." visible="true" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
+              <font>
+                <Font size="20.0" fx:id="x1" />
+              </font>
+            </Label>
+            <Label fx:id="userLabel" font="$x1" text="UserName:" GridPane.columnIndex="0" GridPane.rowIndex="1">
+              <GridPane.margin>
+                <Insets top="2.0" fx:id="x3" />
+              </GridPane.margin>
+            </Label>
+            <TextField id="user" fx:id="userNameText" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="passwdLabel" font="$x1" text="Password:" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="2" />
+            <TextField id="email" fx:id="passwordText" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+          </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="75.0" minWidth="53.0" prefWidth="71.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="311.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="112.0" minHeight="0.0" prefHeight="37.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="127.0" minHeight="0.0" prefHeight="38.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="140.0" minHeight="10.0" prefHeight="140.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+        </GridPane>
+        <GridPane id="GridPane" fx:id="versionPage" hgap="10.0" prefHeight="163.5" prefWidth="397.0" vgap="10.0" visible="false">
+          <children>
+            <Label fx:id="selectFileTile" font="$x1" prefWidth="299.0" styleClass="profileTitle" text="Please select the hadoop install file." GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0" />
+            <Label fx:id="fileLabel" font="$x1" text="Hadoop Install File:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="fileText" editable="true" minWidth="200.0" prefWidth="342.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button fx:id="browseBtn" defaultButton="true" disable="false" font="$x1" maxHeight="2.147483647E9" minHeight="19.0" prefHeight="21.0" prefWidth="53.0" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <Label fx:id="haLabel" text="Auto HA Recover:" GridPane.rowIndex="2" />
+                  <CheckBox fx:id="haCheck" mnemonicParsing="false" text="Enable (need Hadoop2.0+)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="hbaseLabel" text="Install HBase:" GridPane.rowIndex="3" />
+                  <CheckBox fx:id="hbaseCheck" mnemonicParsing="false" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label fx:id="zookLabel" text="Install Zookeeper:" GridPane.rowIndex="4" />
+                  <CheckBox fx:id="zookeeperCheck" mnemonicParsing="false" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+          </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="53.0" prefWidth="123.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="53.0" prefWidth="286.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="53.0" prefWidth="68.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="112.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="112.0" minHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="112.0" minHeight="0.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="206.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="206.0" minHeight="10.0" prefHeight="77.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+        </GridPane>
+        <GridPane id="GridPane" fx:id="zookeeperPage" hgap="10.0" prefHeight="227.0" prefWidth="449.0" vgap="10.0" visible="false">
+          <columnConstraints>
+            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="376.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints maxHeight="168.0" minHeight="22.0" prefHeight="22.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="257.0" minHeight="0.0" prefHeight="257.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+          </rowConstraints>
+               <children>
+                  <TableView fx:id="rolesTable" prefHeight="200.0" prefWidth="200.0" styleClass="table-column" GridPane.rowIndex="1" />
+                  <Label text="Please Select the host roles:" />
+               </children>
+        </GridPane>
+        <GridPane id="GridPane" fx:id="finishPage" hgap="10.0" prefHeight="227.0" prefWidth="449.0" vgap="10.0" visible="false">
+          <children>
+            <Label fx:id="installTile" font="$x1" prefWidth="299.0" styleClass="profileTitle" text="Installing Hadoop." GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0">
+              <GridPane.margin>
+                <Insets />
+              </GridPane.margin>
+            </Label>
+            <ImageView fx:id="loginOk" fitHeight="18.12490836552177" fitWidth="24.16654396057129" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="1">
+              <image>
+                <Image preserveRatio="false" smooth="false" url="@images/ok.png" />
+              </image>
+            </ImageView>
+            <Label fx:id="loginLabel" text="Login to host." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ImageView fx:id="hostNameOk" fitHeight="18.12490836552177" fitWidth="24.16654396057129" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="2">
+              <image>
+                <Image url="@images/ok.png" />
+              </image>
+            </ImageView>
+            <Label fx:id="hostNameLabel" text="Config host name." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ImageView fx:id="rsaOk" fitHeight="18.12490836552177" fitWidth="24.16654396057129" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="3">
+              <image>
+                <Image url="@images/ok.png" />
+              </image>
+            </ImageView>
+            <Label fx:id="rsaLabel" text="Share rsa keys between hosts." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ImageView fx:id="setupOk" fitHeight="18.12490836552177" fitWidth="24.16654396057129" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="4">
+              <image>
+                <Image preserveRatio="false" smooth="false" url="@images/ok.png" />
+              </image>
+            </ImageView>
+            <Label fx:id="setupLabel" text="Setup Hadoop." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ImageView fx:id="configOk" fitHeight="18.12490836552177" fitWidth="24.16654396057129" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="5">
+              <image>
+                <Image preserveRatio="false" smooth="false" url="@images/ok.png" />
+              </image>
+            </ImageView>
+            <Label fx:id="configLabel" text="Config Hadoop." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ImageView fx:id="formatOk" fitHeight="18.12490836552177" fitWidth="24.16654396057129" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="6">
+              <image>
+                <Image url="@images/ok.png" />
+              </image>
+            </ImageView>
+            <Label fx:id="formatLabel" text="Format Hadoop for the first time." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label fx:id="successLabel" text="Install Successfully!" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <ProgressBar id="progressbar" fx:id="progressBar" prefWidth="497.0" progress="0.0" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+          </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="400.0" minWidth="6.0" prefWidth="24.0" />
+            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="376.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="138.0" minHeight="10.0" prefHeight="88.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+          </rowConstraints>
+        </GridPane>
+      </children>
+    </StackPane>
+    <HBox id="HBox" alignment="CENTER" prefWidth="397.0000999999975" spacing="10.0" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="51.0">
+      <children>
+        <Button fx:id="previousBtn" defaultButton="true" disable="true" font="$x1" maxHeight="2.147483647E9" prefHeight="20.999900000002526" prefWidth="62.0" text="Previous" HBox.hgrow="ALWAYS" />
+        <Button fx:id="nextBtn" defaultButton="true" font="$x1" maxHeight="2.147483647E9" prefHeight="20.999900000002526" prefWidth="62.0" text="Next" />
+        <Button fx:id="cancelBtn" defaultButton="true" font="$x1" maxHeight="2.147483647E9" prefHeight="20.999900000002526" prefWidth="62.0" text="Cancel" />
+        <Button fx:id="finishBtn" defaultButton="true" disable="true" font="$x1" maxHeight="2.147483647E9" prefHeight="20.999900000002526" prefWidth="62.0" text="Finish" />
+      </children>
+      <padding>
+        <Insets left="100.0" right="-10.0" />
+      </padding>
+    </HBox>
+    <Button id="window-close" layoutX="467.0" layoutY="8.0" minHeight="19.0" mnemonicParsing="false" onAction="#windowClosePressed" prefHeight="19.0" prefWidth="20.0" />
+  </children>
+  <stylesheets>
+    <URL value="@Dialog.css" />
+  </stylesheets>
+</AnchorPane>

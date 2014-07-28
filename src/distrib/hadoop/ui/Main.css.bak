@@ -1,0 +1,243 @@
+#main-border-pane {
+    -fx-border-image-source: url("images/main-bg.png");
+    -fx-border-image-slice: 30 30 30 30 fill;
+    -fx-border-image-width: 30 30 30 30;
+    -fx-border-image-repeat: stretch;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: -30;
+} 
+ 
+#top-pane {
+    -fx-background-image: url("images/top-bar.png");
+    -fx-background-size: cover;
+    -fx-background-position: left top;
+    -fx-background-repeat: no-repeat;
+}
+
+#center-pane {
+	-fx-padding: 0 2 2 2;
+}
+
+#bottom-pane {
+	-fx-background-color: transparent;
+}
+
+#nameNodePane {
+	-fx-background-radius: 10 10 10 10;
+	-fx-background-color: #dcdcdc;
+}
+
+#secNameNodePane {
+	-fx-background-radius: 10 10 10 10;
+	-fx-background-color: #dcdcdc;
+}
+
+#dataNodesPane {
+    -fx-background-radius: 20 20 20 20;
+	-fx-background-color: #dcdcdc;
+}
+
+#shell-title {
+	-fx-font-family: "Arial";
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(255, 255, 255, 1);
+}
+
+#top-menu-bar {
+	-fx-background-color: null;
+}
+
+.menu {
+	-fx-opacity: 0.8;
+}
+
+.menu:hover {
+	-fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+.tool-button {
+	-fx-background-color: null;
+	-fx-font-family: "Arial";
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+    -fx-font-size: 12;
+}
+
+.tool-button:hover {
+	-fx-background-color: rgba(255, 255, 255, 0.3);
+	-fx-scale-x: 1.1;
+	-fx-scale-y: 1.1;
+}
+
+#config-button {
+	-fx-graphic: url("images/upload.png");
+}
+
+#maintain-button {
+	-fx-graphic: url("images/login.png");
+}
+
+#advance-button {
+	-fx-graphic: url("images/scan.png");
+}
+
+#create-button {
+	-fx-graphic: url("images/create_cluster.png");
+}
+
+#delete-button {
+	-fx-graphic: url("images/delete_cluster.png");
+}
+
+#window-close {
+    -fx-background-color: null;
+    -fx-background-image: url("images/w_cls.png");
+}
+#window-min {
+    -fx-background-color: null;
+    -fx-background-image: url("images/w_min.png");
+}
+#window-max {
+    -fx-background-color: null;
+    -fx-background-image: url("images/w_max.png");
+}
+#window-close:hover {
+    -fx-background-image: url("images/w_cls_h.png");
+}
+#window-min:hover {
+    -fx-background-image: url("images/w_min_h.png");
+}
+#window-max:hover {
+    -fx-background-image: url("images/w_max_h.png");
+}
+#window-close:pressed {
+    -fx-background-image: url("images/w_cls_c.png");
+}
+#window-min:pressed {
+    -fx-background-image: url("images/w_min_c.png");
+}
+#window-max:pressed {
+    -fx-background-image: url("images/w_max_c.png");
+}
+
+.split-pane {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-padding: 0;
+}
+
+.split-pane *.split-pane-divider{
+    -fx-padding: 0 0 0 0;
+    -fx-background-color: rgba(60,60,125, 1);
+    -fx-background-insets: -1 -1 -1 -1, 0;
+    -fx-border-color: null;
+}
+
+.split-pane *.horizontal-grabber {
+    -fx-padding: 0;
+    -fx-shape: "";
+}
+
+.split-pane *.vertical-grabber {
+    -fx-padding: 0;
+    -fx-shape: "";
+}
+
+.tree-view {
+    -fx-background-color: transparent;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.table-view .column-header-background {
+	-fx-background-color: #ECECEC;
+	-fx-border-width: 0;
+}
+
+.table-view .table-column .label {
+	-fx-text-fill: #000000;
+}
+
+.tab-pane {
+    /** without this all tabs (except the first one) don't draw the left-hand
+        edge of their borders, as the caspian.css style is -1px. */
+    -fx-tab-spacing: 0px;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #FFFFFF;
+}
+.tab-pane .tab-header-content-spacer {
+    -fx-padding: 0;
+    -fx-border-width: 0px;
+}
+.tab-pane .tab {
+    -fx-padding: 0 8 2 8;
+    -fx-background-radius: 8 8 0 0, 7 7 0 0;
+    -fx-background-color: #FFFFFF;
+}
+.tab-pane .tab-label {
+    -fx-font-size: 1em;
+    -fx-text-fill: #105563;
+}
+
+.tab-pane .tab:selected {
+    -fx-padding: 5 8 2 8;
+    -fx-background-radius: 8 8 0 0, 7 7 0 0;
+    -fx-background-color: #ECECEC;
+}
+.tab-pane .tab-close-button {
+    -fx-shape: null;
+}
+
+.search-menu-item {
+    -fx-border-color: transparent transparent transparent #bbbbbb;
+    -fx-border-insets: 0 0 0 69;
+    -fx-padding: 4 5 4 -64;
+}
+.search-menu-item:selected , .search-menu-item:hover , .search-menu-item:focused {
+    -fx-border-color: transparent transparent transparent derive(-fx-focus-color,30%);
+}
+
+.search-menu-item:hover .search-menu-item-popup-region , .search-menu-item:focused .search-menu-item-popup-region {
+    -fx-opacity: 1;
+}
+.search-menu-item:selected .group-label, .search-menu-item:hover .group-label, .search-menu-item:focused .group-label{
+    -fx-text-fill: white;
+}
+
+.status-label {
+	-fx-background-color: null;
+	-fx-font-family: "Arial";
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-font-size: 12;
+}
+
+#health-status-value {
+	-fx-graphic: url("images/err.png");
+}
+#redund-status-value {
+	-fx-graphic: url("images/warn.png");
+}
+#ha-status-value {
+	-fx-graphic: url("images/ok.png");
+}
+#page-tree .tree-cell {
+    -fx-indent: 10;
+    -fx-background-color: transparent;
+}
+
+#page-tree .tree-cell:filled:selected:focused, #page-tree .tree-cell:filled:selected {
+    -fx-background: rgba(72, 209, 204, 0.2);
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+#page-tree:focused .tree-cell:filled:selected {
+    -fx-background: rgba(72, 209, 204, 0.4);
+}

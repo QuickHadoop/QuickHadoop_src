@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?scenebuilder-background-color 0xff3333ff?>
+
+<AnchorPane id="main-anchor-pane" fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="distrib.hadoop.ui.MainController">
+  <children>
+    <BorderPane id="main-border-pane" fx:id="mainBorderPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <center>
+        <AnchorPane id="center-pane" fx:id="centerPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+          <children>
+            <SplitPane id="left-right-pane" fx:id="leftRightPane" dividerPositions="0.32809773123909247" focusTraversable="true" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane id="left-pane" fx:id="leftPane" minHeight="20.0" minWidth="20.0" prefHeight="-1.0" prefWidth="-1.0">
+                  <children>
+                    <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <content>
+                        <TilePane id="topTilePane" fx:id="hostsPane" alignment="TOP_LEFT" prefColumns="6" tileAlignment="CENTER">
+                          <hgap>
+                            <Long fx:value="20" />
+                          </hgap>
+                          <padding>
+                            <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
+                          </padding>
+                          <prefHeight>
+                            <Long fx:value="-1" />
+                          </prefHeight>
+                          <prefWidth>
+                            <Long fx:value="-1" />
+                          </prefWidth>
+                          <vgap>
+                            <Long fx:value="20" />
+                          </vgap>
+                        </TilePane>
+                      </content>
+                    </ScrollPane>
+                  </children>
+                </AnchorPane>
+                <AnchorPane id="right-pane" fx:id="rightPane" minHeight="20.0" minWidth="20.0" prefHeight="-1.0" prefWidth="-1.0">
+                  <children>
+                    <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                          <children>
+                            <TilePane id="masterPane" fx:id="mastersPane" alignment="CENTER" hgap="20.0" minHeight="150.0" prefColumns="2" prefHeight="183.0" prefRows="1" prefWidth="748.0" vgap="20.0">
+                              <children>
+                                <VBox fx:id="nameNodePane" alignment="TOP_CENTER" prefHeight="158.0" prefWidth="133.0">
+                                  <children>
+                                    <Label text="NameNode">
+                                      <font>
+                                        <Font name="System Bold" size="12.0" fx:id="x4" />
+                                      </font>
+                                      <textFill>
+                                        <Color blue="0.490" green="0.235" red="0.235" fx:id="x2" />
+                                      </textFill>
+                                    </Label>
+                                  </children>
+                                  <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" fx:id="x3" />
+                                  </padding>
+                                </VBox>
+                                <VBox fx:id="secNameNodePane" alignment="TOP_CENTER" padding="$x3" prefHeight="142.0" prefWidth="133.0">
+                                  <children>
+                                    <Label font="$x4" text="SecondNameNode" textFill="$x2" />
+                                  </children>
+                                </VBox>
+                              </children>
+                            </TilePane>
+                            <VBox fx:id="dataNodesPane" alignment="TOP_LEFT" spacing="5.0">
+                              <children>
+                                <Label text="DataNodes" textFill="$x2">
+                                  <font>
+                                    <Font name="System Bold" size="14.0" />
+                                  </font>
+                                  <VBox.margin>
+                                    <Insets left="20.0" />
+                                  </VBox.margin>
+                                </Label>
+                                <TilePane fx:id="slavesPane" alignment="CENTER_LEFT" hgap="20.0" prefHeight="200.0" prefWidth="200.0" vgap="20.0" />
+                              </children>
+                              <padding>
+                                <Insets left="10.0" right="10.0" top="10.0" />
+                              </padding>
+                            </VBox>
+                          </children>
+                          <padding>
+                            <Insets left="10.0" right="10.0" />
+                          </padding>
+                        </VBox>
+                      </content>
+                    </ScrollPane>
+                  </children>
+                </AnchorPane>
+              </items>
+            </SplitPane>
+          </children>
+          <BorderPane.margin>
+            <Insets />
+          </BorderPane.margin>
+        </AnchorPane>
+      </center>
+      <top>
+        <AnchorPane id="top-pane" fx:id="topPane" onMouseClicked="#windowClicked" onMouseDragged="#windowDragged" onMousePressed="#windowPressed" prefHeight="85.0" prefWidth="600.0">
+          <children>
+            <ImageView fx:id="logo" fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="6.0">
+              <image>
+                <Image preserveRatio="false" smooth="false" url="@images/logo.png" />
+              </image>
+            </ImageView>
+            <Label id="shell-title" fx:id="shellTitle" disable="false" graphicTextGap="4.0" labelFor="$shellTitle" prefHeight="19.000091552734375" text="Quick Hadoop" textFill="WHITE" visible="true" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="10.0">
+              <font>
+                <Font name="Arial" size="12.0" fx:id="x1" />
+              </font>
+            </Label>
+            <Button id="window-min" fx:id="windowMin" mnemonicParsing="false" onAction="#windowMinPressed" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="5.0" />
+            <Button id="window-max" fx:id="windowMax" mnemonicParsing="false" onAction="#windowMaxPressed" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="5.0" />
+            <Button id="window-close" fx:id="windowClose" mnemonicParsing="false" onAction="#windowClosePressed" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="5.0" />
+            <Button id="config-button" fx:id="configButton" contentDisplay="TOP" font="$x1" layoutX="654.0" layoutY="23.0" mnemonicParsing="false" styleClass="tool-button" text="Upload File" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="654.0" />
+            <Button id="maintain-button" fx:id="maintainButton" contentDisplay="TOP" font="$x1" layoutX="560.0" layoutY="23.0" mnemonicParsing="false" styleClass="tool-button" text="Login Cluster" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="560.0" />
+            <Button id="advance-button" fx:id="scanButton" contentDisplay="TOP" font="$x1" mnemonicParsing="false" styleClass="tool-button" text="Scan LAN Hosts" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="139.0" />
+            <Button id="create-button" fx:id="createButton" contentDisplay="TOP" font="$x1" layoutX="459.0" layoutY="23.0" mnemonicParsing="false" styleClass="tool-button" text="Create Cluster" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="459.0" />
+            <Button id="delete-button" fx:id="deleteButton" contentDisplay="TOP" font="$x1" layoutX="742.0" layoutY="23.0" mnemonicParsing="false" styleClass="tool-button" text="Delete Cluster" textAlignment="CENTER" textFill="WHITE" />
+                  <Button id="start-button" fx:id="startButton" contentDisplay="TOP" font="$x1" layoutX="842.0" layoutY="23.0" mnemonicParsing="false" styleClass="tool-button" text="Start All" textAlignment="CENTER" textFill="WHITE" />
+                  <Button id="stop-button" fx:id="stopButton" contentDisplay="TOP" font="$x1" layoutX="921.0" layoutY="23.0" mnemonicParsing="false" styleClass="tool-button" text="Stop All" textAlignment="CENTER" textFill="WHITE" />
+          </children>
+          <BorderPane.margin>
+            <Insets />
+          </BorderPane.margin>
+        </AnchorPane>
+      </top>
+    </BorderPane>
+  </children>
+  <stylesheets>
+    <URL value="@Main.css" />
+  </stylesheets>
+</AnchorPane>
