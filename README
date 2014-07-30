@@ -1,0 +1,30 @@
+Quick Hadoop
+-------------------------------------
+
+   The QuickHadoop is a GUI tool used to deploy hadoop cluster quickly.
+   It is write with Java, and run on Windows. It setup hadoop to the remote 
+   linux hosts use ganymed-ssh2, push file, install, configure, and so on. Also 
+   include the Zookeeper, HBase and HA function. 
+   
+
+   Requirements:
+     Windows
+     Java7+
+
+
+   To Run the program in Eclipse:
+
+     Import the code to your Eclipse
+     run the MainApp.java in the distrib.hadoop.ui package
+     
+
+How to use QuickHadoop
+===================================
+It is very easy to use:
+
+   1. It will Automatically scan the linux hosts on the LAN contains your computer,
+   		You can also manually scan different network segment to discovery the linux hosts.
+   			
+   2. Drag or add linux hosts to NameNode area and DataNodes area on the right.
+   
+   3. Click Create Cluster button to start install Hadoop wizard, and just follow the steps.
