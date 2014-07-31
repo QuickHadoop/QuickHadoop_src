@@ -2,7 +2,7 @@ Quick Hadoop
 -------------------------------------
 
    The QuickHadoop is a GUI tool used to deploy hadoop cluster quickly.
-   It is write with Java, and run on Windows. It setup hadoop to the remote 
+   It is write with JavaFX, and run on Windows. It setup hadoop to the remote 
    linux hosts use ganymed-ssh2, push file, install, configure, and so on. Also 
    include the Zookeeper, HBase and HA function. 
    
@@ -15,6 +15,7 @@ Quick Hadoop
    To Run the program in Eclipse:
 
      Import the code to your Eclipse
+     Maybe you need to add the jfxrt.jar(in the JRE lib) to the Build Path
      run the MainApp.java in the distrib.hadoop.ui package
      
 
