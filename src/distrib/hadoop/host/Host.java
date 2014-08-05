@@ -127,7 +127,7 @@ public class Host {
 	public void installJava() throws AuthException, IOException {
 		Jre jre = Jre.getInstance();
 		shell.excute("rm -fr " + jre.getHome());
-		shell.putFile(Util.getFullPath(jre.getInstallFile()), jre.getInstallFile(), Path.TMP);
+		shell.putFile(jre.getLocalPath(), jre.getInstallFile(), Path.TMP);
 		shell.excute("tar xfz " + jre.getTmpPath() + " -C " + Path.HADOOP_DISTR);
 	}
 	
