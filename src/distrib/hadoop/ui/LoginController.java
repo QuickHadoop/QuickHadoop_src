@@ -137,7 +137,7 @@ public class LoginController extends AnchorPane implements Initializable {
 				}
 					
 				Host host = new Host(null, ip, usrName, passwd);
-				Set<String> ips = new LinkedHashSet<>();
+				Set<String> ips = new LinkedHashSet<String>();
 				try {
 					host.login();
 					String ver = host.getHadoopVer();

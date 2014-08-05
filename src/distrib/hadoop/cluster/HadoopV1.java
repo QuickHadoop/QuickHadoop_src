@@ -100,8 +100,9 @@ public class HadoopV1 extends Hadoop {
 	 * @param javaHome
 	 */
 	public void configHadoopEnv(String userHome) {
+		String java = Jre.getInstance().getHome();
 		cmds.add(cfgHadoopEnv("sed -i '/export JAVA_HOME/d'"));
-		cmds.add(cfgHadoopEnv("echo export JAVA_HOME=" + userHome + "/" + Path.JAVA_HOME + " >>"));
+		cmds.add(cfgHadoopEnv("echo export JAVA_HOME=" + userHome + "/" + java + " >>"));
 	}
 
 	/**
@@ -130,6 +131,7 @@ public class HadoopV1 extends Hadoop {
 	 * @throws IOException
 	 */
 	public void configUserProfile(String userHome) {
+		String java = Jre.getInstance().getHome();
 		String pathEnv = "PATH=$PATH:$HADOOP_HOME/bin:$JAVA_HOME/bin";
 
 		cmds.add(cfgUsrProfile("sed -i '/" + COMMENT_START + "/,/"
@@ -138,12 +140,12 @@ public class HadoopV1 extends Hadoop {
 		cmds.add(cfgUsrProfile("echo 'HADOOP_HOME=" + userHome + "/" + hadoopHome
 				+ "' >>"));
 
-		cmds.add(cfgUsrProfile("echo 'JAVA_HOME=" + userHome + "/" + Path.JAVA_HOME + "' >>"));
+		cmds.add(cfgUsrProfile("echo 'JAVA_HOME=" + userHome + "/" + java + "' >>"));
 		cmds.add(cfgUsrProfile("echo '" + pathEnv + "' >>"));
 		cmds.add(cfgUsrProfile("echo 'export PATH' >>"));
 		cmds.add(cfgUsrProfile("echo '" + COMMENT_END + "' >>"));
 
-		cmds.add("export JAVA_HOME=" + userHome + "/" + Path.JAVA_HOME);
+		cmds.add("export JAVA_HOME=" + userHome + "/" + java);
 		cmds.add("export " + pathEnv);
 	}
 

@@ -30,7 +30,7 @@ public abstract class Hadoop {
 	/** 配置文件目录 */
 	protected String cfgPath;
 	/** 存放配置命令的列表 */
-	protected List<String> cmds = new ArrayList<>();
+	protected List<String> cmds = new ArrayList<String>();
 	
 	/** 最大复制副本个数 */
 	public static final int REP_MAX = 3;
@@ -187,11 +187,12 @@ public abstract class Hadoop {
 	 * @return
 	 */
 	public static Hadoop getFromFile(String file) {
-		if(file == null) {
+		File input = new File(file);
+		if(!input.exists()) {
+			System.out.println("The Hadoop install file is not exist!");
 			return null;
 		}
 		
-		File input = new File(file);
 		InputStream is = null;
 		CompressorInputStream in = null;
 		TarArchiveInputStream tin = null;
@@ -202,7 +203,7 @@ public abstract class Hadoop {
 			tin = new TarArchiveInputStream(in);
 			TarArchiveEntry entry = tin.getNextTarEntry();
 			if (!entry.isDirectory()) {
-				System.out.println("file error!");
+				System.out.println("Can not read the Hadoop install file!");
 				return null;
 			}
 			
@@ -228,7 +229,9 @@ public abstract class Hadoop {
 			hadoop.setHome(Path.HADOOP_DISTR + "/" + dir);
 			hadoop.setCfgPath();
 		} catch (Exception e) {
+			System.out.println("Can not read the Hadoop install file!");
 			e.printStackTrace();
+			return null;
 		} finally {
 			try {
 				is.close();

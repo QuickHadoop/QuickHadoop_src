@@ -1,7 +1,15 @@
 package distrib.hadoop.cluster;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.CompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
 import distrib.hadoop.host.Host;
 import distrib.hadoop.util.Path;
@@ -21,7 +29,7 @@ public class HBase {
 	/** 配置文件目录 */
 	protected String cfgPath;
 	/** 存放配置命令的列表 */
-	protected List<String> cmds = new ArrayList<>();
+	protected List<String> cmds = new ArrayList<String>();
 	
 	/** 注释说明 */
 	public static final String COMMENT = "### Comment by HBase ###";
@@ -125,7 +133,8 @@ public class HBase {
 
 		cmds.add(cfgEnv("echo '" + COMMENT_START + "' >>"));
 
-		cmds.add(cfgEnv("echo 'export JAVA_HOME=" + userHome + "/" + Path.JAVA_HOME + "' >>"));
+		String java = Jre.getInstance().getHome();
+		cmds.add(cfgEnv("echo 'export JAVA_HOME=" + userHome + "/" + java + "' >>"));
 		cmds.add(cfgEnv("echo 'export HBASE_HOME=" + userHome + "/" + hbaseHome + "' >>"));
 		cmds.add(cfgEnv("echo 'export PATH=$PATH:" + userHome + "/" + hbaseHome + "/bin' >>"));
 		cmds.add(cfgEnv("echo 'export HBASE_HEAPSIZE=2048' >>"));
@@ -249,6 +258,52 @@ public class HBase {
 	 */
 	public String stop() {
 		return hbaseHome + "/bin/stop-hbase.sh";
+	}
+	
+	/**
+	 * 根据指定安装文件得到Zookeeper版本信息
+	 * 
+	 * @param file
+	 * @return
+	 */
+	public void getFromFile(String file) {
+		if(file == null) {
+			System.out.println("file name is null!");
+			return;
+		}
+		
+		File input = new File(file);
+		InputStream is = null;
+		CompressorInputStream in = null;
+		TarArchiveInputStream tin = null;
+		try {
+			is = new FileInputStream(input);
+			in = new GzipCompressorInputStream(is, true);
+			tin = new TarArchiveInputStream(in);
+			TarArchiveEntry entry = tin.getNextTarEntry();
+			if (!entry.isDirectory()) {
+				System.out.println("file error!");
+				return;
+			}
+			
+			String dir = entry.getName().replaceAll("/", "");
+			
+			ver = dir;
+			localPath = file;
+			installFile = file.substring(file.lastIndexOf("/") + 1);
+			tmpPath = Path.TMP + "/" + installFile;
+			hbaseHome = Path.HADOOP_DISTR + "/" + ver;
+			cfgPath = hbaseHome + "/conf/";
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+				in.close();
+				tin.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 	
 	/**

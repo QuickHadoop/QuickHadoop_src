@@ -1,0 +1,8 @@
+#########################################################
+#   host_ip        usr_name    password     cluster_roles
+#########################################################
+172.16.168.134     root        passwd       NameNode1
+172.16.168.144     root        passwd       NameNode2
+172.16.177.183     root        passwd       DataNode1
+172.16.186.84      root        passwd       DataNode2
+172.16.186.178     root        passwd       DataNode3

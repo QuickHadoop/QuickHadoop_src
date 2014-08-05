@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: distrib.hadoop.ui.MainApp
+Main-Class: distrib.hadoop.cluster.Cluster
 Class-Path: . lib/jfxrt.jar lib/commons-compress-1.5.jar lib/ganymed-ssh2-build210.jar
-Created-By: karen
+Created-By: tommy

@@ -203,7 +203,8 @@ public class HadoopV2 extends Hadoop {
 
 		cmds.add(cfgHadoopEnv("echo '" + COMMENT_START + "' >>"));
 
-		cmds.add(cfgHadoopEnv("echo 'export JAVA_HOME=" + userHome + "/" + Path.JAVA_HOME + "' >>"));
+		String java = Jre.getInstance().getHome();
+		cmds.add(cfgHadoopEnv("echo 'export JAVA_HOME=" + userHome + "/" + java + "' >>"));
 		cmds.add(cfgHadoopEnv("echo 'export HADOOP_PREFIX=" + userHome + "/"
 				+ hadoopHome + "' >>"));
 		cmds.add(cfgHadoopEnv("echo 'export HADOOP_MAPRED_HOME=${HADOOP_PREFIX}' >>"));
@@ -301,6 +302,7 @@ public class HadoopV2 extends Hadoop {
 	 * @throws IOException
 	 */
 	public void configUserProfile(String userHome) {
+		String java = Jre.getInstance().getHome();
 		String pathEnv = "PATH=$PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin:$JAVA_HOME/bin";
 
 		cmds.add(cfgUsrProfile("sed -i '/" + COMMENT_START + "/,/"
@@ -308,7 +310,7 @@ public class HadoopV2 extends Hadoop {
 		cmds.add(cfgUsrProfile("echo '" + COMMENT_START + "' >>"));
 		cmds.add(cfgUsrProfile("echo 'HADOOP_PREFIX=" + userHome + "/" + hadoopHome
 				+ "' >>"));
-		cmds.add(cfgUsrProfile("echo 'JAVA_HOME=" + userHome + "/" + Path.JAVA_HOME + "' >>"));
+		cmds.add(cfgUsrProfile("echo 'JAVA_HOME=" + userHome + "/" + java + "' >>"));
 		cmds.add(cfgUsrProfile("echo '" + pathEnv + "' >>"));
 		cmds.add(cfgUsrProfile("echo 'export PATH' >>"));
 		cmds.add(cfgUsrProfile("echo 'HADOOP_MAPRED_HOME=${HADOOP_PREFIX}' >>"));
@@ -320,7 +322,7 @@ public class HadoopV2 extends Hadoop {
 		cmds.add(cfgUsrProfile("echo 'YARN_CONF_DIR=${HADOOP_PREFIX}/etc/hadoop' >>"));
 		cmds.add(cfgUsrProfile("echo '" + COMMENT_END + "' >>"));
 
-		cmds.add("export JAVA_HOME=" + userHome + "/" + Path.JAVA_HOME);
+		cmds.add("export JAVA_HOME=" + userHome + "/" + java);
 		cmds.add("export HADOOP_PREFIX=" + userHome + "/" + hadoopHome);
 		cmds.add("export " + pathEnv);
 		cmds.add("export HADOOP_MAPRED_HOME=" + userHome + "/" + hadoopHome);

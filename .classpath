@@ -8,7 +8,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/commons-compress-1.5.jar" sourcepath="C:/Users/lsq/Downloads/commons-compress-1.5-bin/commons-compress-1.5/commons-compress-1.5-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jfxrt.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

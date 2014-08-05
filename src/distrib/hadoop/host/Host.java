@@ -10,6 +10,7 @@ import ch.ethz.ssh2.Connection;
 import distrib.hadoop.cluster.Cluster;
 import distrib.hadoop.cluster.HBase;
 import distrib.hadoop.cluster.Hadoop;
+import distrib.hadoop.cluster.Jre;
 import distrib.hadoop.cluster.Zookeeper;
 import distrib.hadoop.exception.AuthException;
 import distrib.hadoop.shell.RemoteShell;
@@ -124,9 +125,10 @@ public class Host {
 	 * @throws IOException
 	 */
 	public void installJava() throws AuthException, IOException {
-		shell.excute("rm -fr " + Path.JAVA_HOME);
-		shell.putFile(Util.getFullPath(Path.JAVA_FILE), Path.JAVA_FILE, Path.TMP);
-		shell.excute("tar xfz " + Path.JAVA_PATH + " -C " + Path.HADOOP_DISTR);
+		Jre jre = Jre.getInstance();
+		shell.excute("rm -fr " + jre.getHome());
+		shell.putFile(Util.getFullPath(jre.getInstallFile()), jre.getInstallFile(), Path.TMP);
+		shell.excute("tar xfz " + jre.getTmpPath() + " -C " + Path.HADOOP_DISTR);
 	}
 	
 	/**

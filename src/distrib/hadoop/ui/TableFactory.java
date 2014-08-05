@@ -61,7 +61,7 @@ public class TableFactory {
 		
 		TableColumn hostCol = new TableColumn();
 		hostCol.setText("Host");
-		hostCol.setPrefWidth(60);
+		hostCol.setPrefWidth(55);
 		hostCol.setCellValueFactory(new PropertyValueFactory("ip"));
 		hostCol.setSortable(false);
 

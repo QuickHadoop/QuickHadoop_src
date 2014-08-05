@@ -1,4 +1,7 @@
 package distrib.hadoop.cluster;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,20 +13,21 @@ import distrib.hadoop.resource.Messages;
 import distrib.hadoop.shell.RemoteShell;
 import distrib.hadoop.thread.ThreadPool;
 import distrib.hadoop.util.Path;
+import distrib.hadoop.util.RetNo;
 
 public class Cluster {
 
 	/** 分布式主机节点 */
-	private List<Host> hostList = new ArrayList<>();
+	private List<Host> hostList = new ArrayList<Host>();
 
 	/** Journal主机节点 */
-	private List<Host> journalList = new ArrayList<>();
+	private List<Host> journalList = new ArrayList<Host>();
 	
 	/** Zookeeper主机节点 */
-	private List<Host> zooKeeperList = new ArrayList<>();
+	private List<Host> zooKeeperList = new ArrayList<Host>();
 	
 	/** HBase主机节点 */
-	private List<Host> hBaseList = new ArrayList<>();
+	private List<Host> hBaseList = new ArrayList<Host>();
 	
 	/** 是否支持HBase */
 	private boolean supportHbase;
@@ -142,7 +146,7 @@ public class Cluster {
 	 * @return
 	 */
 	public List<Host> getNameNodeList() {
-		List<Host> nameNodeList = new ArrayList<>();
+		List<Host> nameNodeList = new ArrayList<Host>();
 		Host nameNode = getNameNode();
 		Host secNameNode = getSecNameNode();
 		if(nameNode != null) {
@@ -160,7 +164,7 @@ public class Cluster {
 	 * @return
 	 */
 	public List<Host> getDataNodeList() {
-		List<Host> dataNodeList = new ArrayList<>();
+		List<Host> dataNodeList = new ArrayList<Host>();
 		for(Host host : hostList) {
 			String hostName = host.getHostName();
 			if(hostName.startsWith(DN_NAME)) {
@@ -965,48 +969,236 @@ public class Cluster {
 		}
 	}
 	
+	public static void printUsage() {
+		System.out.println("Usage1: java -jar QuickHadoop.jar install [-autoHA]");			
+		System.out.println("Usage2: java -jar QuickHadoop.jar uninstall");
+	}
+	
 	/**
-	 * 测试代码
+	 * cmd
 	 * 
 	 * @param args
 	 */
 	public static void main(String args[]) {
-		Cluster cluster = Cluster.getInstance();
-		Host host1 = new Host("NameNode1", "172.16.168.134", "root", "passwd");
-		Host host2 = new Host("NameNode2", "172.16.168.144", "root", "passwd");
-		Host host3 = new Host("DataNode1", "172.16.177.183", "root", "passwd");
-		Host host4 = new Host("DataNode2", "172.16.186.84", "root", "passwd");
+		if(args.length < 1) {
+			printUsage();
+			return;
+		}
 		
-		host1.isZookeeperProperty().setValue(true);
-		host2.isZookeeperProperty().setValue(true);
-		host3.isZookeeperProperty().setValue(true);
-		host4.isZookeeperProperty().setValue(true);
-//		
-		host1.isHBaseProperty().setValue(true);
-		host2.isHBaseProperty().setValue(true);
-		host3.isHBaseProperty().setValue(true);
-		host4.isHBaseProperty().setValue(true);
-
+		boolean supportHA = false;
 		
-		host1.isJournalNodeProperty().setValue(true);
-		host2.isJournalNodeProperty().setValue(true);
-		host3.isJournalNodeProperty().setValue(true);
-		host4.isJournalNodeProperty().setValue(true);
+		if(args[0].equalsIgnoreCase("install")) {
+			if(args.length > 1){
+				if(!args[1].equalsIgnoreCase("-autoHA")) {
+					printUsage();
+					return;
+				}
+				supportHA = true;
+			}
+			
+			Cluster.getInstance().checkInstall(supportHA);
+		} else if (args[0].equalsIgnoreCase("uninstall")) {
+			if(args.length > 1) {
+				printUsage();
+				return;
+			}
+			
+			Cluster.getInstance().uninstall();
+		} else {
+			printUsage();
+		}
+	}
+	
+	/**
+	 * 检查并执行安装命令
+	 * 
+	 * @param supportHA
+	 */
+	public void checkInstall(boolean supportHA) {
+		boolean installJre = false;
+		boolean installHadoop = false;
+		boolean installZK = false;
+		boolean installHBase = false;
+		
+		String cfgDir = System.getProperty("user.dir") + "/config/";
+		File dir = new File(cfgDir);
+		for(String fn : dir.list()) {
+			System.out.println(fn);
+			if(fn.toLowerCase().contains("jre") 
+					|| fn.toLowerCase().contains("jdk")) {
+				int ret = Jre.getInstance().getFromFile(cfgDir + fn);
+				if(ret == RetNo.OK) {
+					installJre = true;
+				}
+			}
+			if(fn.toLowerCase().contains("hadoop")) {
+				Hadoop hp = Hadoop.getFromFile(cfgDir + fn);
+				if(hp != null) {
+					setHadoop(hp);
+					installHadoop = true;
+				}
+			}
+			if(fn.toLowerCase().contains("zookeeper")) {
+				Zookeeper.getInstance().getFromFile(cfgDir + fn);
+				installZK = true;
+			}
+			if(fn.toLowerCase().contains("hbase")) {
+				HBase.getInstance().getFromFile(cfgDir + fn);
+				installHBase = true;
+			}
+		}
+		
+		if(!installJre) {
+			System.err.println("Could not find the JRE or JDK install file, it should be a .tar.gz file which in the dir ./config/");
+			return;
+		}
+		
+		if(!installHadoop) {
+			System.err.println("Could not find the Hadoop install file, it should be a .tar.gz file which in the dir ./config/");
+			return;
+		}
+		
+		if(hadoop instanceof HadoopV1 && supportHA) {
+			System.err.println("The Auto HA function requires Hadoop2.0+");
+			return;
+		}
+		
+		if(installHBase && !installZK) {
+			System.err.println("The HBase requires Zookeeper, Could not find the Zookeeper install file in the dir ./config/");
+			return;
+		}
+		
+		System.out.println("### Start Install the Hadoop Cluster");
+		List<Host> hosts = getHostsFromFile(cfgDir + "hosts");
+		boolean hasNameNode = false;
+		boolean hasDataNode = false;
+		for(Host h : hosts) {
+			if(h.getHostName().contains(NN_NAME)) {
+				hasNameNode = true;
+			}
+			if(h.getHostName().contains(DN_NAME)) {
+				hasDataNode = true;
+			}
+		}
+		if(!hasNameNode || !hasDataNode) {
+			System.err.println("At least one NameNode and one DataNode are required to setup a cluster!");
+			return;
+		}
+		setHostList(hosts);
+		
+		if(supportHA && (getNameNode()== null || getSecNameNode() == null)) {
+			System.err.println("At least 2 NameNodes are required for Auto HA function!");
+			return;
+		}
+		
+		int cnt = hosts.size() % 2 ==0 ? hosts.size() : hosts.size() - 1;
+		for(int i = 0; i < cnt; i++) {
+			hosts.get(i).isZookeeperProperty().setValue(installZK);
+			hosts.get(i).isHBaseProperty().setValue(installHBase);
+			hosts.get(i).isJournalNodeProperty().setValue(installZK);
+		}
+		
+		setSupportZookeeper(installZK);
+		setHaAutoRecover(supportHA);
+		setSupportHbase(installHBase);
+		distrib();
+		
+		System.out.println("### Install successfully! You need logout the old SSH, before login to the cluster hosts.");
+	}
 
+	/**
+	 * 卸载集群
+	 */
+	public void uninstall() {
+		System.out.println("### Start Uninstall the Hadoop Cluster");
+		String cfgDir = System.getProperty("user.dir") + "/config/";
+		List<Host> hosts = getHostsFromFile(cfgDir + "hosts");
+		setHostList(hosts);
 
-		cluster.getHostList().add(host1);
-		cluster.getHostList().add(host2);
-		cluster.getHostList().add(host3);
-		cluster.getHostList().add(host4);
+		if(hosts.size() < 1) {
+			System.err.println("There is no host to uninstall according the file ./config/hosts");
+			return;
+		}
 
-//		cluster.getHostList().add(new Host("DataNode3", "172.16.186.178", "root", "passwd"));
-//		cluster.getHostList().add(new Host("DataNode4", "172.16.177.150", "root", "passwd"));
-//		cluster.getHostList().add(new Host("DataNode5", "172.16.177.151", "root", "passwd"));
-		cluster.setHadoop(new HadoopV2());
-		cluster.setSupportZookeeper(true);
-		cluster.setHaAutoRecover(true);
-		cluster.setSupportHbase(true);
-		cluster.distrib();
+		boolean hadoopInstalled = false;
+		boolean zkInstalled = false;
+		boolean hBaseInstalled = false;
+		
+		try {
+			for(Host h : hosts) {
+				h.login();
+				RemoteShell sh = h.getShell();
+
+				hadoopInstalled |= sh.fileExists(Path.HADOOP_DISTR);
+				zkInstalled |= sh.fileExists(Zookeeper.getInstance().getHome());
+				hBaseInstalled |= sh.fileExists(HBase.getInstance().getHome());
+				h.logout();
+
+				h.isZookeeperProperty().setValue(zkInstalled);
+				h.isHBaseProperty().setValue(hBaseInstalled);
+			}
+			
+			if(!hadoopInstalled) {
+				System.err.println("Hadoop is not installed on the hosts according the file ./config/hosts");
+				return;
+			}
+			
+			setSupportZookeeper(zkInstalled);
+			setSupportHbase(hBaseInstalled);
+
+			login();
+			restore();
+			logout();			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		System.out.println("### Uninstall successfully!");
+	}
+	
+	/**
+	 * 从文件中获取主机列表
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	public List<Host> getHostsFromFile(String fileName) {
+		List<Host> hosts = new ArrayList<Host>();
+		File file = new File(fileName);
+		if(!file.exists()) {
+			System.err.println("./config/hosts not exist!");
+			return hosts;
+		}
+		
+		BufferedReader buf = null;
+		try {
+			buf = new BufferedReader(new FileReader(file));
+			String line = null;
+			while((line = buf.readLine()) != null) {
+				if(line.startsWith("#")) {
+					continue;
+				}
+				String[] h = line.split("\\s+");
+				if(h.length < 4) {
+					continue;
+				}
+				hosts.add(new Host(h[3].trim(), h[0].trim(), h[1].trim(), h[2].trim()));
+			}
+		} catch (Exception e) {
+			System.err.println("Read ./config/hosts err!");
+			e.printStackTrace();
+		} finally {
+			try {
+				if(buf != null) {
+					buf.close();					
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return hosts;
 	}
 	
 	/**
@@ -1072,6 +1264,13 @@ public class Cluster {
 	 */
 	public List<Host> getHostList() {
 		return hostList;
+	}
+	
+	/**
+	 * @param hostList the hostList to set
+	 */
+	public void setHostList(List<Host> hostList) {
+		this.hostList = hostList;
 	}
 
 	/**

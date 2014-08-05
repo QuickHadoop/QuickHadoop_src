@@ -1,7 +1,6 @@
 package distrib.hadoop.ui;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -25,7 +24,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import distrib.hadoop.cluster.Cluster;
 import distrib.hadoop.cluster.Hadoop;
-import distrib.hadoop.exception.AuthException;
 import distrib.hadoop.host.Host;
 import distrib.hadoop.resource.Messages;
 
@@ -249,7 +247,7 @@ public class ConfigController extends AnchorPane implements Initializable {
 					defText = nameNode.getUserHome() + "/" + defText; //$NON-NLS-1$
 				}
 				pathText.setText(defText);
-			} catch (AuthException | IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}			
 		}

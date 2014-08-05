@@ -1,8 +1,16 @@
 package distrib.hadoop.cluster;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.CompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
 import distrib.hadoop.exception.AuthException;
 import distrib.hadoop.host.Host;
@@ -31,7 +39,7 @@ public class Zookeeper {
 	/** log4j文件 */
 	protected String log4j;
 	/** 存放配置命令的列表 */
-	protected List<String> cmds = new ArrayList<>();
+	protected List<String> cmds = new ArrayList<String>();
 	
 	/** 注释说明 */
 	public static final String COMMENT = "### Comment by zookeeper ###";
@@ -206,6 +214,56 @@ public class Zookeeper {
 	 */
 	public String stop() {
 		return zookeeperHome + "/bin/zkServer.sh stop";
+	}
+	
+	/**
+	 * 根据指定安装文件得到Zookeeper版本信息
+	 * 
+	 * @param file
+	 * @return
+	 */
+	public void getFromFile(String file) {
+		if(file == null) {
+			System.out.println("file name is null!");
+			return;
+		}
+		
+		File input = new File(file);
+		InputStream is = null;
+		CompressorInputStream in = null;
+		TarArchiveInputStream tin = null;
+		try {
+			is = new FileInputStream(input);
+			in = new GzipCompressorInputStream(is, true);
+			tin = new TarArchiveInputStream(in);
+			TarArchiveEntry entry = tin.getNextTarEntry();
+			if (!entry.isDirectory()) {
+				System.out.println("file error!");
+				return;
+			}
+			
+			String dir = entry.getName().replaceAll("/", "");
+			
+			ver = dir;
+			localPath = file;
+			installFile = file.substring(file.lastIndexOf("/") + 1);
+			tmpPath = Path.TMP + "/" + installFile;
+			zookeeperHome = Path.HADOOP_DISTR + "/" + ver;
+			cfgPath = zookeeperHome + "/conf/";
+			cfgFile = cfgPath + "zoo.cfg";
+			sampCfgFile = cfgPath + "zoo_sample.cfg";
+			zkEnv = zookeeperHome + "/bin/zkEnv.sh";
+			log4j = cfgPath + "log4j.properties";
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+				in.close();
+				tin.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 	
 	/**
