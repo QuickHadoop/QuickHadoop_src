@@ -1023,7 +1023,6 @@ public class Cluster {
 		String cfgDir = System.getProperty("user.dir") + "/config/";
 		File dir = new File(cfgDir);
 		for(String fn : dir.list()) {
-			System.out.println(fn);
 			if(fn.toLowerCase().startsWith("jre") 
 					|| fn.toLowerCase().contains("jdk")) {
 				int ret = Jre.getInstance().getFromFile(cfgDir + fn);
