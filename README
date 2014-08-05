@@ -1,21 +1,15 @@
-Quick Hadoop 2.0.0 for Linux
+Quick Hadoop
 -------------------------------------
 
    The QuickHadoop is a GUI tool used to deploy hadoop cluster quickly.
    It is write with Java, and run on Windows or Linux. It setup hadoop to the remote 
    linux hosts use ganymed-ssh2, push file, install, configure, and so on. Also 
    include the Zookeeper, HBase and HA function. 
-   
-
-   Requirements:
-     Windows/Linux
-     Java6+
-
 
    To Run the program in Eclipse:
-
-     Import the code to your Eclipse
-     Maybe you need to add the jfxrt.jar(in the JRE lib) to the Build Path
+	 You need Java7 installed on your computer,
+     Import the code to your Eclipse,
+     Maybe you need to add the jfxrt.jar(in the JRE lib) to the Build Path,
      run the MainApp.java in the distrib.hadoop.ui package
      
 
