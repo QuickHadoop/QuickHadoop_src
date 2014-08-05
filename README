@@ -1,15 +1,15 @@
-Quick Hadoop
+Quick Hadoop 2.0.0 for Linux
 -------------------------------------
 
    The QuickHadoop is a GUI tool used to deploy hadoop cluster quickly.
-   It is write with JavaFX, and run on Windows. It setup hadoop to the remote 
+   It is write with Java, and run on Windows or Linux. It setup hadoop to the remote 
    linux hosts use ganymed-ssh2, push file, install, configure, and so on. Also 
    include the Zookeeper, HBase and HA function. 
    
 
    Requirements:
-     Windows
-     Java7+
+     Windows/Linux
+     Java6+
 
 
    To Run the program in Eclipse:
@@ -19,7 +19,7 @@ Quick Hadoop
      run the MainApp.java in the distrib.hadoop.ui package
      
 
-How to use QuickHadoop
+How to use QuickHadoop in Windows
 ===================================
 It is very easy to use:
 
@@ -29,3 +29,45 @@ It is very easy to use:
    2. Drag or add linux hosts to NameNode area and DataNodes area on the right.
    
    3. Click Create Cluster button to start install Hadoop wizard, and just follow the steps.
+   
+   
+How to use QuickHadoop in Linux
+===================================
+   1. tar xvfz QuickHadoop2.0.0.tar.gz
+   2. cd QuickHadoop2.0.0
+   3. prepare the config files,you need put these files in the dir config/, like this:
+      config/jre1.6.0_24.tar.gz
+      config/hadoop-2.4.1.tar.gz
+      config/zookeeper-3.4.6.tar.gz(Optional, if you need install Zookeeper)
+      config/hbase-0.98.3-hadoop2-bin.tar.gz(Optional, if you need install HBase)
+      config/hosts
+      
+      	the config/hosts file should like this:
+      	
+		#########################################################
+		#   host_ip        usr_name    password     cluster_roles
+		#########################################################
+		192.168.1.110      root        passwd       NameNode1
+		192.168.1.111      root        passwd       NameNode2
+		192.168.1.112      root        passwd       DataNode1
+		192.168.1.113      root        passwd       DataNode2      
+      
+   4. run the cmd to install hadoop cluster:
+   	  java -jar QuickHadoop2.0.0.jar install
+   	  
+   	  this cmd will also install the zookeeper or hbase if you have already 
+   	  put the zookeeper or hbase file in the config/ dir.
+   	  
+   	  if you need setup Auto HA function ,you can add argument like this:
+   	  java -jar QuickHadoop2.0.0.jar install -autoHA
+   			
+   5. If you want to uninstall the hadoop cluster, run the cmd:
+   	  java -jar QuickHadoop2.0.0.jar uninstall
+   	  
+   	  this cmd will delete all the install files in your hosts.
+   
+
+ Questions & Answers
+ ===================================
+      If you have questions you can contact the author through the email:
+      contactsshare@163.com
