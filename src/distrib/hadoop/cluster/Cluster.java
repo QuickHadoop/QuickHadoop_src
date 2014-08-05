@@ -1024,25 +1024,25 @@ public class Cluster {
 		File dir = new File(cfgDir);
 		for(String fn : dir.list()) {
 			System.out.println(fn);
-			if(fn.toLowerCase().contains("jre") 
+			if(fn.toLowerCase().startsWith("jre") 
 					|| fn.toLowerCase().contains("jdk")) {
 				int ret = Jre.getInstance().getFromFile(cfgDir + fn);
 				if(ret == RetNo.OK) {
 					installJre = true;
 				}
 			}
-			if(fn.toLowerCase().contains("hadoop")) {
+			if(fn.toLowerCase().startsWith("hadoop")) {
 				Hadoop hp = Hadoop.getFromFile(cfgDir + fn);
 				if(hp != null) {
 					setHadoop(hp);
 					installHadoop = true;
 				}
 			}
-			if(fn.toLowerCase().contains("zookeeper")) {
+			if(fn.toLowerCase().startsWith("zookeeper")) {
 				Zookeeper.getInstance().getFromFile(cfgDir + fn);
 				installZK = true;
 			}
-			if(fn.toLowerCase().contains("hbase")) {
+			if(fn.toLowerCase().startsWith("hbase")) {
 				HBase.getInstance().getFromFile(cfgDir + fn);
 				installHBase = true;
 			}
