@@ -1023,25 +1023,29 @@ public class Cluster {
 		String cfgDir = System.getProperty("user.dir") + "/config/";
 		File dir = new File(cfgDir);
 		for(String fn : dir.list()) {
-			if(fn.toLowerCase().startsWith("jre") 
-					|| fn.toLowerCase().contains("jdk")) {
+			if((fn.toLowerCase().startsWith("jre") 
+					|| fn.toLowerCase().contains("jdk")) &&
+					fn.toLowerCase().endsWith("gz")) {
 				int ret = Jre.getInstance().getFromFile(cfgDir + fn);
 				if(ret == RetNo.OK) {
 					installJre = true;
 				}
 			}
-			if(fn.toLowerCase().startsWith("hadoop")) {
+			if(fn.toLowerCase().startsWith("hadoop") &&
+					fn.toLowerCase().endsWith("gz")) {
 				Hadoop hp = Hadoop.getFromFile(cfgDir + fn);
 				if(hp != null) {
 					setHadoop(hp);
 					installHadoop = true;
 				}
 			}
-			if(fn.toLowerCase().startsWith("zookeeper")) {
+			if(fn.toLowerCase().startsWith("zookeeper") &&
+					fn.toLowerCase().endsWith("gz")) {
 				Zookeeper.getInstance().getFromFile(cfgDir + fn);
 				installZK = true;
 			}
-			if(fn.toLowerCase().startsWith("hbase")) {
+			if(fn.toLowerCase().startsWith("hbase") && 
+					fn.toLowerCase().endsWith("gz")) {
 				HBase.getInstance().getFromFile(cfgDir + fn);
 				installHBase = true;
 			}
