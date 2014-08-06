@@ -207,7 +207,9 @@ public abstract class Hadoop {
 				return null;
 			}
 			
-			String dir = entry.getName().replaceAll("/", "");
+			String entryName = entry.getName();
+			String dir = entryName.substring(0, entryName.indexOf("/"));
+			
 			while (entry != null) {
 			   String name = entry.getName();
 			   if(entry.isDirectory() && name != null) {

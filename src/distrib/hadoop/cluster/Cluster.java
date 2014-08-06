@@ -1128,9 +1128,24 @@ public class Cluster {
 				h.login();
 				RemoteShell sh = h.getShell();
 
-				hadoopInstalled |= sh.fileExists(Path.HADOOP_DISTR);
-				zkInstalled |= sh.fileExists(Zookeeper.getInstance().getHome());
-				hBaseInstalled |= sh.fileExists(HBase.getInstance().getHome());
+				boolean dirExist = sh.fileExists(Path.HADOOP_DISTR);
+				hadoopInstalled |= dirExist;
+				
+				if(dirExist) {
+					File dir = new File(Path.HADOOP_DISTR);
+					for(String fn : dir.list()) {
+						if(fn.toLowerCase().startsWith("zookeeper")) {
+							Zookeeper.getInstance().setHome(Path.HADOOP_DISTR + "/" + fn);
+							zkInstalled = true;
+							
+						}
+						if(fn.toLowerCase().startsWith("hbase")) {
+							HBase.getInstance().setHome(Path.HADOOP_DISTR + "/" + fn);
+							hBaseInstalled = true;
+						}
+					}					
+				}
+				
 				h.logout();
 
 				h.isZookeeperProperty().setValue(zkInstalled);

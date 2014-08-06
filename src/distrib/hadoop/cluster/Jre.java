@@ -78,7 +78,8 @@ public class Jre {
 				return RetNo.FILE_IO_ERROR;
 			}
 			
-			String dir = entry.getName().replaceAll("/", "");
+			String entryName = entry.getName();
+			String dir = entryName.substring(0, entryName.indexOf("/"));
 			
 			ver = dir;
 			localPath = file;

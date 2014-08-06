@@ -9,7 +9,6 @@ Quick Hadoop
    To Run the program in Eclipse:
 	 You need Java7 installed on your computer,
      Import the code to your Eclipse,
-     Maybe you need to add the jfxrt.jar(in the JRE lib) to the Build Path,
      run the MainApp.java in the distrib.hadoop.ui package
      
 
@@ -29,15 +28,19 @@ How to use QuickHadoop in Linux
 ===================================
    1. tar xvfz QuickHadoop2.0.0.tar.gz
    2. cd QuickHadoop2.0.0
-   3. prepare the config files,you need put these files in the dir config/, like this:
-      config/jre1.6.0_24.tar.gz
-      config/hadoop-2.4.1.tar.gz
-      config/zookeeper-3.4.6.tar.gz(Optional, if you need install Zookeeper)
-      config/hbase-0.98.3-hadoop2-bin.tar.gz(Optional, if you need install HBase)
-      config/hosts
+   3. prepare the config files,you need put some files in the dir config/, like this:
+   
+		config/jre1.6.0_24.tar.gz
+		config/hadoop-2.4.1.tar.gz
+		config/zookeeper-3.4.6.tar.gz(Optional, if you need install Zookeeper)
+		config/hbase-0.98.3-hadoop2-bin.tar.gz(Optional, if you need install HBase)
+		config/hosts
+      
+      	the jre, hadoop is must, you can choose different version as you need,
+      	the zookeeper, hbase is optional, required only if you need install them,
+      	and also you can choose different version of them.
       
       	the config/hosts file should like this:
-      	
 		#########################################################
 		#   host_ip        usr_name    password     cluster_roles
 		#########################################################
@@ -45,6 +48,8 @@ How to use QuickHadoop in Linux
 		192.168.1.111      root        passwd       NameNode2
 		192.168.1.112      root        passwd       DataNode1
 		192.168.1.113      root        passwd       DataNode2      
+      
+      	please change the host_ip,usr_name and password according your hosts.
       
    4. run the cmd to install hadoop cluster:
    	  java -jar QuickHadoop2.0.0.jar install
@@ -58,10 +63,11 @@ How to use QuickHadoop in Linux
    5. If you want to uninstall the hadoop cluster, run the cmd:
    	  java -jar QuickHadoop2.0.0.jar uninstall
    	  
-   	  this cmd will delete all the install files in your hosts.
+   	  this cmd will delete all the install files in your hosts, 
+   	  and revert the enviorment before install.
    
 
  Questions & Answers
  ===================================
-      If you have questions you can contact the author through the email:
+      If you have any question you can contact the author through the email:
       contactsshare@163.com

@@ -286,7 +286,8 @@ public class HBase {
 				return;
 			}
 			
-			String dir = entry.getName().replaceAll("/", "");
+			String entryName = entry.getName();
+			String dir = entryName.substring(0, entryName.indexOf("/"));
 			
 			ver = dir;
 			localPath = file;
@@ -304,6 +305,10 @@ public class HBase {
 			} catch (Exception e) {
 			}
 		}
+	}
+	
+	public static void main(String[] args) {
+		HBase.getInstance().getFromFile("./config/zookeeper-3.4.6.tar.gz");
 	}
 	
 	/**
