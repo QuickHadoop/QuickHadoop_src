@@ -1132,18 +1132,17 @@ public class Cluster {
 				hadoopInstalled |= dirExist;
 				
 				if(dirExist) {
-					File dir = new File(Path.HADOOP_DISTR);
-					for(String fn : dir.list()) {
-						if(fn.toLowerCase().startsWith("zookeeper")) {
-							Zookeeper.getInstance().setHome(Path.HADOOP_DISTR + "/" + fn);
-							zkInstalled = true;
-							
-						}
-						if(fn.toLowerCase().startsWith("hbase")) {
-							HBase.getInstance().setHome(Path.HADOOP_DISTR + "/" + fn);
-							hBaseInstalled = true;
-						}
-					}					
+					String zHome = sh.getCmdRet("ls " + Path.HADOOP_DISTR + " | grep zookeeper");
+					if(zHome != null && zHome.toLowerCase().startsWith("zookeeper")) {
+						Zookeeper.getInstance().setHome(Path.HADOOP_DISTR + "/" + zHome);
+						zkInstalled = true;
+					}
+					
+					String hBaseHome = sh.getCmdRet("ls " + Path.HADOOP_DISTR + " | grep hbase");
+					if(hBaseHome != null && hBaseHome.toLowerCase().startsWith("hbase")) {
+						HBase.getInstance().setHome(Path.HADOOP_DISTR + "/" + hBaseHome);
+						hBaseInstalled = true;
+					}			
 				}
 				
 				h.logout();
