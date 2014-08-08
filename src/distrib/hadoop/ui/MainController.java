@@ -501,6 +501,8 @@ public class MainController extends AnchorPane implements Initializable {
 					    	}
 					    	
 					    	cluster.getHostList().clear();
+					    	cluster.setSetUped(false);
+					    	
 							Platform.runLater(new Runnable() {
 							    @Override
 							    public void run() {
@@ -618,7 +620,7 @@ public class MainController extends AnchorPane implements Initializable {
 	 * @return
 	 */
 	private boolean canEditCluster() {
-		return Cluster.getInstance().getHostList().size() == 0;
+		return !Cluster.getInstance().isSetUped();
 	}
 	
     /**

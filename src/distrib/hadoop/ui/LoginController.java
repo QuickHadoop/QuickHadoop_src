@@ -161,6 +161,7 @@ public class LoginController extends AnchorPane implements Initializable {
 					host.logout();
 					createCluster(usrName, passwd, ips);
 					Cluster.getInstance().setHadoop(hadoop);
+					Cluster.getInstance().setSetUped(true);
 					mainApp.getMainContr().refreshClusterUI(true);
 				} catch (Exception e) {
 					e.printStackTrace();

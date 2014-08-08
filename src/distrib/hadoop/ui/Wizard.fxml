@@ -46,12 +46,9 @@
             <Label fx:id="fileLabel" font="$x1" text="Hadoop Install File:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <TextField fx:id="fileText" editable="true" minWidth="200.0" prefWidth="342.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Button fx:id="browseBtn" defaultButton="true" disable="false" font="$x1" maxHeight="2.147483647E9" minHeight="19.0" prefHeight="21.0" prefWidth="53.0" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <Label fx:id="haLabel" text="Auto HA Recover:" GridPane.rowIndex="2" />
-                  <CheckBox fx:id="haCheck" mnemonicParsing="false" text="Enable (need Hadoop2.0+)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Label fx:id="hbaseLabel" text="Install HBase:" GridPane.rowIndex="3" />
-                  <CheckBox fx:id="hbaseCheck" mnemonicParsing="false" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Label fx:id="zookLabel" text="Install Zookeeper:" GridPane.rowIndex="4" />
-                  <CheckBox fx:id="zookeeperCheck" mnemonicParsing="false" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label fx:id="jreLabel" font="$x1" text="JRE Install File:" GridPane.rowIndex="3" />
+                  <TextField fx:id="jreText" editable="true" minWidth="200.0" prefWidth="342.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Button fx:id="jreBtn" defaultButton="true" disable="false" font="$x1" maxHeight="2.147483647E9" minHeight="19.0" prefHeight="21.0" prefWidth="53.0" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="3" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="53.0" prefWidth="123.0" />
@@ -67,7 +64,38 @@
             <RowConstraints maxHeight="206.0" minHeight="10.0" prefHeight="77.0" vgrow="SOMETIMES" />
           </rowConstraints>
         </GridPane>
-        <GridPane id="GridPane" fx:id="zookeeperPage" hgap="10.0" prefHeight="227.0" prefWidth="449.0" vgap="10.0" visible="false">
+            <GridPane id="GridPane" fx:id="advancedPage" hgap="10.0" prefHeight="163.5" prefWidth="397.0" vgap="10.0" visible="false">
+               <children>
+                  <Label fx:id="advancedFileTile" font="$x1" prefHeight="21.0" prefWidth="341.0" styleClass="profileTitle" text="Please select the advanced installation." GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0" />
+                  <Label fx:id="zookFileLabel" font="$x1" text="Zookeeper Install File:" GridPane.rowIndex="2" />
+                  <TextField fx:id="zookFileText" editable="true" minWidth="200.0" prefWidth="342.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Button fx:id="zookFileBtn" defaultButton="true" disable="false" font="$x1" maxHeight="2.147483647E9" minHeight="19.0" prefHeight="21.0" prefWidth="53.0" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <Label fx:id="haLabel" text="Auto HA Recover:" GridPane.rowIndex="5" />
+                  <CheckBox fx:id="haCheck" mnemonicParsing="false" text="Enable (need Hadoop2.0+)" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label fx:id="hbaseLabel" text="Install HBase:" GridPane.rowIndex="3" />
+                  <CheckBox fx:id="hbaseCheck" mnemonicParsing="false" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label fx:id="zookLabel" text="Install Zookeeper:" GridPane.rowIndex="1" />
+                  <CheckBox fx:id="zookeeperCheck" mnemonicParsing="false" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="hbaseFileLabel" font="$x1" text="HBase Install File:" GridPane.rowIndex="4" />
+                  <TextField fx:id="hbaseFileText" editable="true" minWidth="200.0" prefWidth="342.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Button fx:id="hbaseFileBtn" defaultButton="true" disable="false" font="$x1" maxHeight="2.147483647E9" minHeight="19.0" prefHeight="21.0" prefWidth="53.0" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="53.0" prefWidth="144.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="53.0" prefWidth="265.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="53.0" prefWidth="68.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="112.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="112.0" minHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="112.0" minHeight="0.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="206.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="206.0" minHeight="8.0" prefHeight="29.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="206.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+        <GridPane id="GridPane" fx:id="tablePage" hgap="10.0" prefHeight="227.0" prefWidth="449.0" vgap="10.0" visible="false">
           <columnConstraints>
             <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="376.0" />
           </columnConstraints>

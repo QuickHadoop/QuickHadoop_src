@@ -45,11 +45,16 @@ public class TableFactory {
 		Cluster cluster = Cluster.getInstance();
 		Hadoop hadoop = cluster.getHadoop();
 		List<Host> hosts = Cluster.getInstance().getHostList();
+		
+		boolean canbeHA = (hadoop instanceof HadoopV2) &&
+				cluster.getNameNode() != null &&
+				cluster.getSecNameNode() != null;
+		
 		for(Host h : hosts) {
 			boolean isDataNode = h.getHostName().startsWith(Cluster.DN_NAME);
 			h.isDataNodeProperty().setValue(isDataNode);
 			h.isNameNodeProperty().setValue(!isDataNode);
-			h.isJournalNodeProperty().setValue(hadoop instanceof HadoopV2);
+			h.isJournalNodeProperty().setValue(canbeHA);
 			h.isZookeeperProperty().setValue(cluster.isSupportZookeeper());
 			h.isHBaseProperty().setValue(cluster.isSupportHbase());
 		}
@@ -69,7 +74,7 @@ public class TableFactory {
 		cols.add(hostCol);
 		cols.add(createCheckBoxCell("NameNode", "isNameNode", 40));
 		cols.add(createCheckBoxCell("DataNode", "isDataNode", 40));
-		if(hadoop instanceof HadoopV2) {
+		if(canbeHA) {
 			cols.add(createCheckBoxCell("JournalNode", "isJournalNode", 50));			
 		}
 		if(cluster.isSupportZookeeper()) {

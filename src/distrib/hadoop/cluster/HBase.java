@@ -13,6 +13,7 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
 import distrib.hadoop.host.Host;
 import distrib.hadoop.util.Path;
+import distrib.hadoop.util.RetNo;
 import distrib.hadoop.util.Util;
 
 public class HBase {
@@ -266,13 +267,13 @@ public class HBase {
 	 * @param file
 	 * @return
 	 */
-	public void getFromFile(String file) {
-		if(file == null) {
-			System.out.println("file name is null!");
-			return;
+	public int getFromFile(String file) {
+		File input = new File(file);
+		if(!input.exists()) {
+			System.out.println("The JRE or JDK install file is not exist!");
+			return RetNo.FILE_NOT_EXIST;
 		}
 		
-		File input = new File(file);
 		InputStream is = null;
 		CompressorInputStream in = null;
 		TarArchiveInputStream tin = null;
@@ -283,7 +284,7 @@ public class HBase {
 			TarArchiveEntry entry = tin.getNextTarEntry();
 			if (!entry.isDirectory()) {
 				System.out.println("file error!");
-				return;
+				return RetNo.FILE_IO_ERROR;
 			}
 			
 			String entryName = entry.getName();
@@ -297,6 +298,7 @@ public class HBase {
 			cfgPath = hbaseHome + "/conf/";
 		} catch (Exception e) {
 			e.printStackTrace();
+			return RetNo.FILE_IO_ERROR;
 		} finally {
 			try {
 				is.close();
@@ -305,6 +307,8 @@ public class HBase {
 			} catch (Exception e) {
 			}
 		}
+		
+		return RetNo.OK;
 	}
 	
 	public static void main(String[] args) {

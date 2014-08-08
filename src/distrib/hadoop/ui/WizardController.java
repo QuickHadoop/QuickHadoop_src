@@ -31,10 +31,14 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import distrib.hadoop.cluster.Cluster;
+import distrib.hadoop.cluster.HBase;
 import distrib.hadoop.cluster.Hadoop;
 import distrib.hadoop.cluster.HadoopV1;
+import distrib.hadoop.cluster.Jre;
+import distrib.hadoop.cluster.Zookeeper;
 import distrib.hadoop.host.Host;
 import distrib.hadoop.resource.Messages;
+import distrib.hadoop.util.RetNo;
 
 public class WizardController extends AnchorPane implements Initializable {
 
@@ -47,6 +51,9 @@ public class WizardController extends AnchorPane implements Initializable {
 	
 	@FXML
 	private Label selectFileTile;
+	
+	@FXML
+	private Label advancedFileTile;
 
 	@FXML
 	private Label installTile;
@@ -61,7 +68,10 @@ public class WizardController extends AnchorPane implements Initializable {
 	private GridPane versionPage;	
 	
 	@FXML
-	private GridPane zookeeperPage;
+	private GridPane advancedPage;	
+	
+	@FXML
+	private GridPane tablePage;
 	
 	@FXML
 	private GridPane finishPage;
@@ -86,6 +96,15 @@ public class WizardController extends AnchorPane implements Initializable {
 	
 	@FXML
 	private Button browseBtn;
+	
+	@FXML
+	private Label jreLabel;
+	
+	@FXML
+	private TextField jreText;
+	
+	@FXML
+	private Button jreBtn;
 	
 	@FXML
 	private ImageView loginOk;
@@ -162,6 +181,25 @@ public class WizardController extends AnchorPane implements Initializable {
 	@FXML
 	private CheckBox zookeeperCheck;
 	
+	@FXML
+	private Label zookFileLabel;
+	
+	@FXML
+	private Button zookFileBtn;
+	
+	@FXML
+	private TextField zookFileText;
+	
+	@FXML
+	private Label hbaseFileLabel;
+	
+	@FXML
+	private Button hbaseFileBtn;
+	
+	@FXML
+	private TextField hbaseFileText;
+	
+	
     private double mouseDragOffsetX = 0;
     private double mouseDragOffsetY = 0;
 	
@@ -184,15 +222,56 @@ public class WizardController extends AnchorPane implements Initializable {
 		label.getStyleClass().add("label-err"); //$NON-NLS-1$
 	}
 	
+	private class TextChangeListener implements ChangeListener<String> {
+
+		private Label infoLabel;
+		
+		public TextChangeListener(Label infoLabel) {
+			this.infoLabel = infoLabel;
+		}
+
+		@Override
+		public void changed(ObservableValue<? extends String> arg0,
+				String arg1, String arg2) {
+			infoLabel.setText(SEL_FILE_TITLE);
+			infoLabel.getStyleClass().remove("label-err"); //$NON-NLS-1$
+			infoLabel.getStyleClass().add("label"); //$NON-NLS-1$
+		}
+	}
+	
+	private class browseBtnListener implements EventHandler<Event> {
+
+		private TextField text;
+		
+		public browseBtnListener(TextField text) {
+			this.text = text;
+		}
+		
+		@Override
+		public void handle(Event arg0) {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle(Messages.getString("WizardController.select.file")); //$NON-NLS-1$
+			File file = fileChooser.showOpenDialog(stage);
+			if(file != null) {
+				String path = file.getAbsolutePath();
+				text.setText(path);
+			}
+		}
+	}
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		passwdTile.setText(Messages.getString("WizardController.passwd.title"));
 		selectFileTile.setText(SEL_FILE_TITLE);
 		installTile.setText(Messages.getString("Install.hadoop"));
+		advancedFileTile.setText(Messages.getString("WizardController.select.function.title"));
 		
 		userLabel.setText(Messages.getString("UserName.input"));
 		passwdLabel.setText(Messages.getString("Passwd.input"));
-		fileLabel.setText(Messages.getString("File.input"));
+		fileLabel.setText(Messages.getString("Hadoop.input"));
+		jreLabel.setText(Messages.getString("JRE.input"));
+		zookFileLabel.setText(Messages.getString("Zookeeper.input"));
+		hbaseFileLabel.setText(Messages.getString("HBase.input"));
 		loginLabel.setText(Messages.getString("LoginLabel"));
 		hostNameLabel.setText(Messages.getString("CfgHostNameLabel"));
 		rsaLabel.setText(Messages.getString("RsaLabel"));
@@ -209,38 +288,41 @@ public class WizardController extends AnchorPane implements Initializable {
 		cancelBtn.setText(Messages.getString("CancelBtn"));
 		finishBtn.setText(Messages.getString("FinishBtn"));
 		browseBtn.setText(Messages.getString("BrowseBtn"));
+		jreBtn.setText(Messages.getString("BrowseBtn"));
+		zookFileBtn.setText(Messages.getString("BrowseBtn"));
+		hbaseFileBtn.setText(Messages.getString("BrowseBtn"));
 		
 		haCheck.setText(Messages.getString("HACheck"));
 		hbaseCheck.setText(Messages.getString("HBaseCheck"));
 		zookeeperCheck.setText(Messages.getString("ZookeeperCheck"));
 		
+		boolean supportHa = Cluster.getInstance().getNameNode() != null &&
+				Cluster.getInstance().getSecNameNode() != null;
+		haLabel.setVisible(supportHa);
+		haCheck.setVisible(supportHa);
+		
 		pages.add(loginPage);
 		pages.add(versionPage);
-		pages.add(zookeeperPage);
+		pages.add(advancedPage);
+		pages.add(tablePage);
 		pages.add(finishPage);
 		
-		fileText.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> arg0,
-					String arg1, String arg2) {
-				selectFileTile.setText(SEL_FILE_TITLE);
-				selectFileTile.getStyleClass().remove("label-err"); //$NON-NLS-1$
-				selectFileTile.getStyleClass().add("label"); //$NON-NLS-1$
-			}
-		});
+		fileText.textProperty().addListener(new TextChangeListener(selectFileTile));
+		jreText.textProperty().addListener(new TextChangeListener(selectFileTile));
+		zookFileText.textProperty().addListener(new TextChangeListener(advancedFileTile));
+		hbaseFileText.textProperty().addListener(new TextChangeListener(advancedFileTile));
 		
-		browseBtn.setOnMouseClicked(new EventHandler<Event>() {
-			@Override
-			public void handle(Event event) {
-				FileChooser fileChooser = new FileChooser();
-				fileChooser.setTitle(Messages.getString("WizardController.select.file")); //$NON-NLS-1$
-				File file = fileChooser.showOpenDialog(stage);
-				if(file != null) {
-					String path = file.getAbsolutePath();
-					fileText.setText(path);
-				}
-			}
-		});
+		zookFileLabel.setVisible(false);
+		zookFileText.setVisible(false);
+		zookFileBtn.setVisible(false);
+		hbaseFileLabel.setVisible(false);
+		hbaseFileText.setVisible(false);
+		hbaseFileBtn.setVisible(false);
+		
+		browseBtn.setOnMouseClicked(new browseBtnListener(fileText));
+		jreBtn.setOnMouseClicked(new browseBtnListener(jreText));
+		zookFileBtn.setOnMouseClicked(new browseBtnListener(zookFileText));
+		hbaseFileBtn.setOnMouseClicked(new browseBtnListener(hbaseFileText));
 		
 		nextBtn.setOnMouseClicked(new EventHandler<Event>() {
 			@Override
@@ -256,14 +338,19 @@ public class WizardController extends AnchorPane implements Initializable {
 				}
 				
 				if(getCurrentPage().equals(versionPage)) {
-					if(!checkFilePass(fileText.getText())) {
+					if(!checkVersion()) {
 						return;
 					}
-					prepareInstall();
+				}
+				
+				if(getCurrentPage().equals(advancedPage)) {
+					if(!checkAdvanced()) {
+						return;
+					}
 				}
 				
 				GridPane nextPage = pages.get(++curIndex);
-				if(nextPage.equals(zookeeperPage)) {
+				if(nextPage.equals(tablePage)) {
 					TableFactory.getInstance(rolesTable).fill();
 				}
 				
@@ -364,9 +451,87 @@ public class WizardController extends AnchorPane implements Initializable {
 			}
 		};
 		
-		zookeeperCheck.setDisable(true);
 		haCheck.selectedProperty().addListener(checkListener);
 		hbaseCheck.selectedProperty().addListener(checkListener);
+		
+		zookeeperCheck.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov,
+					Boolean old_val, Boolean new_val) {
+				zookFileLabel.setVisible(new_val);
+				zookFileText.setVisible(new_val);
+				zookFileBtn.setVisible(new_val);
+			}
+		});
+		
+		hbaseCheck.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov,
+					Boolean old_val, Boolean new_val) {
+				hbaseFileLabel.setVisible(new_val);
+				hbaseFileText.setVisible(new_val);
+				hbaseFileBtn.setVisible(new_val);
+			}
+		});
+	}
+
+	private boolean checkVersion() {
+		if(!checkFilePass(fileText.getText(), selectFileTile) || 
+				!checkFilePass(jreText.getText(), selectFileTile)) {
+			return false;
+		}
+		
+		hadoop = Hadoop.getFromFile(fileText.getText());
+		if(hadoop == null) {
+			showErr(selectFileTile, Messages.getString("WizardController.hadoop.invalid"));
+			return false;
+		}
+		
+		int ret = Jre.getInstance().getFromFile(jreText.getText());
+		if(ret != RetNo.OK) {
+			showErr(selectFileTile, Messages.getString("WizardController.jre.invalid"));
+			return false;
+		}
+
+		Cluster.getInstance().setHadoop(hadoop);
+		return true;
+	}
+
+	private boolean checkAdvanced() {
+		if(zookeeperCheck.isSelected()) {
+			if(!checkFilePass(zookFileText.getText(), advancedFileTile)) {
+				return false;
+			}
+			
+			int ret = Zookeeper.getInstance().getFromFile(zookFileText.getText());
+			if(ret != RetNo.OK) {
+				showErr(selectFileTile, Messages.getString("WizardController.zookeeper.invalid"));
+				return false;
+			}
+		}
+		
+		if(hbaseCheck.isSelected()) {
+			if(!checkFilePass(hbaseFileText.getText(), advancedFileTile)) {
+				return false;
+			}
+			
+			int ret = HBase.getInstance().getFromFile(hbaseFileText.getText());
+			if(ret != RetNo.OK) {
+				showErr(selectFileTile, Messages.getString("WizardController.hbase.invalid"));
+				return false;
+			}
+		}
+		
+		if((hadoop instanceof HadoopV1) && haCheck.isSelected()) {
+			showErr(selectFileTile, Messages.getString("WizardController.ha.support")); //$NON-NLS-1$
+			return false;
+		}
+		
+		Cluster cluster = Cluster.getInstance();
+		cluster.setHaAutoRecover(haCheck.isSelected());
+		cluster.setSupportHbase(hbaseCheck.isSelected());
+		cluster.setSupportZookeeper(zookeeperCheck.isSelected());
+		return true;
 	}
 	
 	/**
@@ -393,36 +558,14 @@ public class WizardController extends AnchorPane implements Initializable {
 	 * @param path
 	 * @return
 	 */
-	private boolean checkFilePass(String path) {
-		if(!path.endsWith(".tar.gz")) { //$NON-NLS-1$
-			showErr(selectFileTile, Messages.getString("WizardController.file.tar")); //$NON-NLS-1$
-			return false;
-		}
-		
-		hadoop = Hadoop.getFromFile(path);
-		if(hadoop == null) {
-			showErr(selectFileTile, Messages.getString("WizardController.file.invalid")); //$NON-NLS-1$
-			return false;
-		}
-		
-		if((hadoop instanceof HadoopV1) && haCheck.isSelected()) {
-			showErr(selectFileTile, Messages.getString("WizardController.ha.support")); //$NON-NLS-1$
+	private boolean checkFilePass(String path, Label errTitle) {
+		if(!path.endsWith(".tar.gz") && !path.endsWith(".tgz")) { //$NON-NLS-1$
+			showErr(errTitle, Messages.getString("WizardController.file.tar")); //$NON-NLS-1$
 			return false;
 		}
 		
 		return true;
 	}
-	
-    /**
-     * 设置集群安装特性
-     */
-    private void prepareInstall() {
-    	Cluster cluster = Cluster.getInstance();
-    	cluster.setHadoop(hadoop);
-    	cluster.setHaAutoRecover(haCheck.isSelected());
-    	cluster.setSupportHbase(hbaseCheck.isSelected());
-    	cluster.setSupportZookeeper(zookeeperCheck.isSelected());
-    }
 	
     /**
      * 安装Hadoop
@@ -444,6 +587,7 @@ public class WizardController extends AnchorPane implements Initializable {
 		Cluster clusters = Cluster.getInstance();
 		
 		try {
+			clusters.setSetUped(false);
 			clusters.login();
 			progress.set(0.1);
 			clusters.prepareWork();
@@ -464,6 +608,7 @@ public class WizardController extends AnchorPane implements Initializable {
 			progress.set(0.8);
 			clusters.logout();
 			progress.set(1.0);
+			clusters.setSetUped(true);
 			refreshUI();
 		} catch (Exception e) {
 			e.printStackTrace();

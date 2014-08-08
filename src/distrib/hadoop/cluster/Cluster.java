@@ -47,6 +47,9 @@ public class Cluster {
 	/** HBase */
 	private HBase hBase;
 	
+	/** whether is setuped */
+	private boolean setUped = false;
+	
 	/** 错误码 */
 	private int exitCode;
 	
@@ -1247,7 +1250,7 @@ public class Cluster {
 		}
 		ThreadPool.Execute(runList, true);
 	}
-
+	
 	/**
 	 * @return the hadoop
 	 */
@@ -1365,5 +1368,13 @@ public class Cluster {
 	 */
 	public void setHaAutoRecover(boolean autoHa) {
 		this.haAutoRecover = autoHa;
+	}
+
+	public boolean isSetUped() {
+		return setUped;
+	}
+
+	public void setSetUped(boolean setUped) {
+		this.setUped = setUped;
 	}
 }
