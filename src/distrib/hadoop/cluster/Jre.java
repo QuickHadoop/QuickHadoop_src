@@ -83,7 +83,7 @@ public class Jre {
 			
 			ver = dir;
 			localPath = file;
-			installFile = file.substring(file.lastIndexOf("/") + 1);
+			installFile = input.getName();
 			tmpPath = Path.TMP + "/" + installFile;
 			jreHome = Path.HADOOP_DISTR + "/" + ver;
 		} catch (Exception e) {

@@ -296,11 +296,6 @@ public class WizardController extends AnchorPane implements Initializable {
 		hbaseCheck.setText(Messages.getString("HBaseCheck"));
 		zookeeperCheck.setText(Messages.getString("ZookeeperCheck"));
 		
-		boolean supportHa = Cluster.getInstance().getNameNode() != null &&
-				Cluster.getInstance().getSecNameNode() != null;
-		haLabel.setVisible(supportHa);
-		haCheck.setVisible(supportHa);
-		
 		pages.add(loginPage);
 		pages.add(versionPage);
 		pages.add(advancedPage);
@@ -549,6 +544,12 @@ public class WizardController extends AnchorPane implements Initializable {
 		}
 		
 		mainApp.getMainContr().setUpClustre(name, passwd);
+		Cluster cluster = Cluster.getInstance();
+		
+		boolean supportHa = cluster.getNameNode() != null &&
+				cluster.getSecNameNode() != null;
+		haLabel.setVisible(supportHa);
+		haCheck.setVisible(supportHa);
 		return true;
 	}
 	
@@ -591,7 +592,7 @@ public class WizardController extends AnchorPane implements Initializable {
 			clusters.login();
 			progress.set(0.1);
 			clusters.prepareWork();
-			clusters.stopAll();
+//			clusters.stopAll();
 			progress.set(0.2);
 			clusters.cfgHostName();
 			clusters.cfgDNS();

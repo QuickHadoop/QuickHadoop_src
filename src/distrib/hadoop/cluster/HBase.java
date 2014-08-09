@@ -292,7 +292,7 @@ public class HBase {
 			
 			ver = dir;
 			localPath = file;
-			installFile = file.substring(file.lastIndexOf("/") + 1);
+			installFile = input.getName();
 			tmpPath = Path.TMP + "/" + installFile;
 			hbaseHome = Path.HADOOP_DISTR + "/" + ver;
 			cfgPath = hbaseHome + "/conf/";

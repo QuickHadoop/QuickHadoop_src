@@ -101,9 +101,6 @@ public class Cluster {
 		}
 		
 		for(Host h : hostList) {
-			if(h.equals(nameNode)) {
-				continue;
-			}
 			shareRsa(nameNode, h);
 			shareRsa(h, nameNode);
 		}
@@ -214,9 +211,12 @@ public class Cluster {
 		RemoteShell cShell = client.getShell();
 		RemoteShell sShell = server.getShell();
 		
-		cShell.getFile(Path.RSA_PUB, Path.TMP_LOCAL);
-		sShell.putFile(Path.RSA_LOCAL, Path.RSA_SCP_NAME, Path.TMP);
-		sShell.excute("cat " + Path.RSA_SCP_FULL_PATH + " >> " + Path.SSH_AUTH);
+		if(!client.equals(server)) {			
+			cShell.getFile(Path.RSA_PUB, Path.TMP_LOCAL);
+			sShell.putFile(Path.RSA_LOCAL, Path.RSA_SCP_NAME, Path.TMP);
+			sShell.excute("cat " + Path.RSA_SCP_FULL_PATH + " >> " + Path.SSH_AUTH);			
+		}
+		
 		cShell.excute("ssh -o StrictHostKeyChecking=no " + server.getIp());
 		cShell.excute("ssh -o StrictHostKeyChecking=no " + server.getHostName());
 	}

@@ -248,7 +248,7 @@ public class Zookeeper {
 			
 			ver = dir;
 			localPath = file;
-			installFile = file.substring(file.lastIndexOf("/") + 1);
+			installFile = input.getName();
 			tmpPath = Path.TMP + "/" + installFile;
 			zookeeperHome = Path.HADOOP_DISTR + "/" + ver;
 			cfgPath = zookeeperHome + "/conf/";

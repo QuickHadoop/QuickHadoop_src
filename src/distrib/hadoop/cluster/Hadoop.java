@@ -226,8 +226,8 @@ public abstract class Hadoop {
 			}
 			hadoop.setLocalPath(file);
 			hadoop.setVer(dir);
-			hadoop.setInstallFile(dir + ".tar.gz");
-			hadoop.setTmpPath(Path.TMP + "/" + dir + ".tar.gz");
+			hadoop.setInstallFile(input.getName());
+			hadoop.setTmpPath(Path.TMP + "/" + input.getName());
 			hadoop.setHome(Path.HADOOP_DISTR + "/" + dir);
 			hadoop.setCfgPath();
 		} catch (Exception e) {
