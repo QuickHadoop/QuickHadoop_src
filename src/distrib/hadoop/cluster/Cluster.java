@@ -29,6 +29,12 @@ public class Cluster {
 	/** HBase主机节点 */
 	private List<Host> hBaseList = new ArrayList<Host>();
 	
+	/** HMasters */
+	private List<Host> hMasterList = new ArrayList<Host>();
+	
+	/** HRegionServers */
+	private List<Host> hRegionList = new ArrayList<Host>();
+	
 	/** 是否支持HBase */
 	private boolean supportHbase;
 	
@@ -257,9 +263,20 @@ public class Cluster {
 		if(supportHbase) {
 			hBase = HBase.getInstance();
 			hBaseList.clear();
+			hMasterList.clear();
+			hRegionList.clear();
+			
 			for(Host h : hostList) {
 				if(h.isHBaseProperty().getValue()) {
-					hBaseList.add(h);					
+					hBaseList.add(h);
+				}
+			}
+
+			for(int i = 0; i < hBaseList.size(); i++) {
+				if(i == 0) {
+					hMasterList.add(hBaseList.get(i));
+				} else {
+					hRegionList.add(hBaseList.get(i));
 				}
 			}
 		}
@@ -648,18 +665,11 @@ public class Cluster {
 	 * @throws InstallException
 	 */
 	public void startHBase() {
-		if(hBase == null || hBaseList.size() < 1) {
+		if(hBase == null) {
 			return;
 		}
-		try {
-			Host host = hBaseList.get(0);
-			if(host == null) {
-				return;
-			}
-			host.getShell().excutePty(hBase.start());
-		} catch (Exception e) {
-			exit(RemoteShell.FAILED);
-		}
+		
+		batchCmd(hMasterList, hBase.start());
 	}
 	
 	/**
@@ -668,18 +678,11 @@ public class Cluster {
 	 * @throws InstallException
 	 */
 	public void stopHBase() {
-		if(hBase == null || hBaseList.size() < 1) {
+		if(hBase == null) {
 			return;
 		}
-		try {
-			Host host = hBaseList.get(0);
-			if(host == null) {
-				return;
-			}
-			host.getShell().excutePty(hBase.stop());
-		} catch (Exception e) {
-			exit(RemoteShell.FAILED);
-		}
+		
+		batchCmd(hMasterList, hBase.stop());
 	}
 	
 	/**
@@ -1312,6 +1315,30 @@ public class Cluster {
 	 */
 	public void setZooKeeperList(List<Host> zooKeeperList) {
 		this.zooKeeperList = zooKeeperList;
+	}
+	
+	public List<Host> gethBaseList() {
+		return hBaseList;
+	}
+
+	public void sethBaseList(List<Host> hBaseList) {
+		this.hBaseList = hBaseList;
+	}
+	
+	public List<Host> gethRegionList() {
+		return hRegionList;
+	}
+
+	public void sethRegionList(List<Host> hRegionList) {
+		this.hRegionList = hRegionList;
+	}
+	
+	public List<Host> gethMasterList() {
+		return hMasterList;
+	}
+
+	public void sethMasterList(List<Host> hMasterList) {
+		this.hMasterList = hMasterList;
 	}
 
 	/**

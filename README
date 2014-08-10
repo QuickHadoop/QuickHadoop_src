@@ -8,6 +8,7 @@ Quick Hadoop
 
    To Run the program in Eclipse:
 	 You need Java7 installed on your computer,
+	 Maybe you need to change the build path of jfxrt.jar to your path.
      Import the code to your Eclipse,
      run the MainApp.java in the distrib.hadoop.ui package
      

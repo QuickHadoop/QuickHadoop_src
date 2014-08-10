@@ -194,9 +194,9 @@ public class HBase {
 	/**
 	 * 配置regionservers
 	 */
-	public void configReg(List<Host> dataNodes) {
+	public void configReg(List<Host> hosts) {
 		cmds.add(cfgReg("cat /dev/null >"));
-		for(Host s : dataNodes) {
+		for(Host s : hosts) {
 			cmds.add(cfgReg("echo " + s.getIp() + " >>"));		
 		}
 	}
@@ -221,13 +221,13 @@ public class HBase {
 	public void prepareConfig() {
 		Cluster cluster = Cluster.getInstance();
 		Host nn = cluster.getNameNode();
-		List<Host> dataNodes = cluster.getDataNodeList();
+		List<Host> hRegionServers = cluster.gethRegionList();
 		String userHome = nn.getUserHome();
 		Hadoop hadoop = cluster.getHadoop();
 		
 		configEnv(userHome);
 		configSite();
-		configReg(dataNodes);
+		configReg(hRegionServers);
 		cpHadoopCfg(hadoop);
 	}
 	

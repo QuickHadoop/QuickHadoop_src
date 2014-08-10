@@ -193,15 +193,17 @@ public class LoginController extends AnchorPane implements Initializable {
 				host.login();
 				RemoteShell sh = host.getShell();
 				String hostName = sh.getCmdOutPut("hostname"); //$NON-NLS-1$
-				zkInstalled |= sh.fileExists(Zookeeper.getInstance().getHome());
-				hBaseInstalled |= sh.fileExists(HBase.getInstance().getHome());
+				boolean zkExist = sh.fileExists(Zookeeper.getInstance().getHome());
+				zkInstalled |= zkExist;
+				boolean hbExis = sh.fileExists(HBase.getInstance().getHome());
+				hBaseInstalled |= hbExis;
 				host.logout();
 				if(hostName == null) {
 					return;
 				}
 				host.setHostName(hostName);
-				host.isZookeeperProperty().setValue(zkInstalled);
-				host.isHBaseProperty().setValue(hBaseInstalled);
+				host.isZookeeperProperty().setValue(zkExist);
+				host.isHBaseProperty().setValue(hbExis);
 				hostList.add(host);
 			} catch (Exception e) {
 				e.printStackTrace();
