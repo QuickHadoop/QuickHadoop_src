@@ -85,30 +85,15 @@ public class Cluster {
 		try {
 			genRsaKey();
 			
-			shareRsaToNameNode(getNameNode());
-			shareRsaToNameNode(getSecNameNode());
+			for(int i = 0; i < hostList.size(); i++) {
+				for(int j = i; j < hostList.size(); j++) {
+					shareRsa(hostList.get(i), hostList.get(j));
+					shareRsa(hostList.get(j), hostList.get(i));
+				}
+			}
 		} catch (Exception e) {
 			exit(RemoteShell.FAILED);
 			throw new InstallException(Messages.getString("Exception.rsa.failed"));
-		}
-	}
-
-	/**
-	 * 与 NameNode之间共享秘钥
-	 * 
-	 * @param nameNode
-	 * @throws AuthException
-	 * @throws IOException
-	 */
-	private void shareRsaToNameNode(Host nameNode) throws AuthException,
-			IOException {
-		if(nameNode == null) {
-			return;
-		}
-		
-		for(Host h : hostList) {
-			shareRsa(nameNode, h);
-			shareRsa(h, nameNode);
 		}
 	}
 	
