@@ -12,13 +12,13 @@ How to use QuickHadoop in Windows
 It is very easy to use:
 
    1. Open the QuickHadoop.exe, it will Automatically scan the linux hosts on the LAN,
-   		You can also manually scan different network segment to discovery other linux hosts.
+      You can also manually scan different network segment to discovery other linux hosts.
    			
    2. Drag or add linux hosts to NameNode area and DataNodes area on the right.
    
    3. Click Create Cluster button to start a wizard, and follow the steps.
-   		You need to input the hadoop install file and the jre install file,
-   		You can choose to install Zookeeper or HBase.
+      You need to input the hadoop install file and the jre install file,
+      You can choose to install Zookeeper or HBase.
    
    
 How to use QuickHadoop in Linux
@@ -27,41 +27,41 @@ How to use QuickHadoop in Linux
    2. cd QuickHadoop2.0.0
    3. prepare the config files,you need put some files in the dir config/, like this:
    
-		config/jre1.6.0_24.tar.gz
-		config/hadoop-2.4.1.tar.gz
-		config/zookeeper-3.4.6.tar.gz(Optional, if you need install Zookeeper)
-		config/hbase-0.98.3-hadoop2-bin.tar.gz(Optional, if you need install HBase)
-		config/hosts
+      config/jre1.6.0_24.tar.gz
+      config/hadoop-2.4.1.tar.gz
+      config/zookeeper-3.4.6.tar.gz(Optional, if you need install Zookeeper)
+      config/hbase-0.98.3-hadoop2-bin.tar.gz(Optional, if you need install HBase)
+      config/hosts
       
-      	the jre, hadoop is must, you can choose different version as you need,
-      	the zookeeper, hbase is optional, required only if you need install them,
-      	and also you can choose different version of them.
+      the jre, hadoop is must, you can choose different version as you need,
+      the zookeeper, hbase is optional, required only if you need install them,
+      and also you can choose different version of them.
       
-      	the config/hosts file should like this:
-		#########################################################
-		#   host_ip        usr_name    password     cluster_roles
-		#########################################################
-		192.168.1.110      root        passwd       NameNode1
-		192.168.1.111      root        passwd       NameNode2
-		192.168.1.112      root        passwd       DataNode1
-		192.168.1.113      root        passwd       DataNode2      
+      the config/hosts file should like this:
+      #########################################################
+      #   host_ip        usr_name    password     cluster_roles
+      #########################################################
+      192.168.1.110      root        passwd       NameNode1
+      192.168.1.111      root        passwd       NameNode2
+      192.168.1.112      root        passwd       DataNode1
+      192.168.1.113      root        passwd       DataNode2      
       
-      	please change the host_ip,usr_name and password according your hosts.
+      please change the host_ip,usr_name and password according your hosts.
       
    4. run the cmd to install hadoop cluster:
-   	  java -jar QuickHadoop2.0.0.jar install
-   	  
-   	  this cmd will also install the zookeeper or hbase if you have already 
-   	  put the zookeeper or hbase file in the config/ dir.
-   	  
-   	  if you need setup Auto HA function ,you can add argument like this:
-   	  java -jar QuickHadoop2.0.0.jar install -autoHA
+      java -jar QuickHadoop2.0.0.jar install
+      
+      this cmd will also install the zookeeper or hbase if you have already 
+      put the zookeeper or hbase file in the config/ dir.
+      
+      if you need setup Auto HA function ,you can add argument like this:
+      java -jar QuickHadoop2.0.0.jar install -autoHA
    			
    5. If you want to uninstall the hadoop cluster, run the cmd:
-   	  java -jar QuickHadoop2.0.0.jar uninstall
-   	  
-   	  this cmd will delete all the install files in your hosts, 
-   	  and revert the enviorment before install.
+      java -jar QuickHadoop2.0.0.jar uninstall
+      
+      this cmd will delete all the install files in your hosts, 
+      and revert the enviorment before install.
 
       
 How to Run the source code in Eclipse:
@@ -75,5 +75,4 @@ How to Run the source code in Eclipse:
 Questions & Answers
 ======================================
    If you have any question you can contact the author through the email:
-      contactsshare@163.com
-      
+   contactsshare@163.com
