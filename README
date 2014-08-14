@@ -66,6 +66,8 @@ How to use QuickHadoop in Linux
       
 How to Run the source code in Eclipse:
 ======================================
+The source code url: https://github.com/QuickHadoop/QuickHadoop_src.git
+
    You need Java7 installed on your computer,
    Import the code to your Eclipse,
    Maybe you need to change the build path of jfxrt.jar to your own path,
