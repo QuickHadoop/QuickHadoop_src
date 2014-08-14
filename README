@@ -1,32 +1,28 @@
 Quick Hadoop
--------------------------------------
+======================================
 
-   The QuickHadoop is a GUI tool used to deploy hadoop cluster quickly.
+   The QuickHadoop is an open source software used to deploy hadoop cluster quickly.
    It is write with Java, and run on Windows or Linux. It setup hadoop to the remote 
    linux hosts use ganymed-ssh2, push file, install, configure, and so on. Also 
    include the Zookeeper, HBase and HA function. 
 
-   To Run the program in Eclipse:
-	 You need Java7 installed on your computer,
-	 Maybe you need to change the build path of jfxrt.jar to your path.
-     Import the code to your Eclipse,
-     run the MainApp.java in the distrib.hadoop.ui package
-     
 
 How to use QuickHadoop in Windows
-===================================
+======================================
 It is very easy to use:
 
-   1. It will Automatically scan the linux hosts on the LAN contains your computer,
-   		You can also manually scan different network segment to discovery the linux hosts.
+   1. Open the QuickHadoop.exe, it will Automatically scan the linux hosts on the LAN,
+   		You can also manually scan different network segment to discovery other linux hosts.
    			
    2. Drag or add linux hosts to NameNode area and DataNodes area on the right.
    
-   3. Click Create Cluster button to start install Hadoop wizard, and just follow the steps.
+   3. Click Create Cluster button to start a wizard, and follow the steps.
+   		You need to input the hadoop install file and the jre install file,
+   		You can choose to install Zookeeper or HBase.
    
    
 How to use QuickHadoop in Linux
-===================================
+======================================
    1. tar xvfz QuickHadoop2.0.0.tar.gz
    2. cd QuickHadoop2.0.0
    3. prepare the config files,you need put some files in the dir config/, like this:
@@ -66,9 +62,18 @@ How to use QuickHadoop in Linux
    	  
    	  this cmd will delete all the install files in your hosts, 
    	  and revert the enviorment before install.
+
+      
+How to Run the source code in Eclipse:
+======================================
+   You need Java7 installed on your computer,
+   Import the code to your Eclipse,
+   Maybe you need to change the build path of jfxrt.jar to your own path,
+   run the MainApp.java in the distrib.hadoop.ui package.
    
 
- Questions & Answers
- ===================================
-      If you have any question you can contact the author through the email:
+Questions & Answers
+======================================
+   If you have any question you can contact the author through the email:
       contactsshare@163.com
+      
