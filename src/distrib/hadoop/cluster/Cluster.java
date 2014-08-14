@@ -14,6 +14,7 @@ import distrib.hadoop.shell.RemoteShell;
 import distrib.hadoop.thread.ThreadPool;
 import distrib.hadoop.util.Path;
 import distrib.hadoop.util.RetNo;
+import distrib.hadoop.util.Util;
 
 public class Cluster {
 
@@ -961,8 +962,10 @@ public class Cluster {
 	}
 	
 	public static void printUsage() {
-		System.out.println("Usage1: java -jar QuickHadoop.jar install [-autoHA]");			
-		System.out.println("Usage2: java -jar QuickHadoop.jar uninstall");
+		System.out.println("Usage1: java -jar QuickHadoop.jar install [-autoHA]");
+		System.out.println("Usage2: java -jar QuickHadoop.jar start");
+		System.out.println("Usage3: java -jar QuickHadoop.jar stop");
+		System.out.println("Usage4: java -jar QuickHadoop.jar uninstall");
 	}
 	
 	/**
@@ -976,6 +979,7 @@ public class Cluster {
 			return;
 		}
 		
+		Cluster cluster = Cluster.getInstance();
 		boolean supportHA = false;
 		
 		if(args[0].equalsIgnoreCase("install")) {
@@ -987,14 +991,29 @@ public class Cluster {
 				supportHA = true;
 			}
 			
-			Cluster.getInstance().checkInstall(supportHA);
+			cluster.checkInstall(supportHA);
 		} else if (args[0].equalsIgnoreCase("uninstall")) {
-			if(args.length > 1) {
-				printUsage();
-				return;
+			cluster.uninstall();
+		} else if (args[0].equalsIgnoreCase("start")) {
+			try {
+				if(cluster.getInfo()) {
+					cluster.login();
+					cluster.startAll();
+					cluster.logout();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			
-			Cluster.getInstance().uninstall();
+		} else if (args[0].equalsIgnoreCase("stop")) {
+			try {
+				if(cluster.getInfo()) {
+					cluster.login();
+					cluster.stopAll();
+					cluster.logout();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else {
 			printUsage();
 		}
@@ -1099,61 +1118,109 @@ public class Cluster {
 		
 		System.out.println("### Install successfully! You need logout the old SSH, before login to the cluster hosts.");
 	}
-
+	
 	/**
-	 * 卸载集群
+	 * get the info of cluster.
 	 */
-	public void uninstall() {
-		System.out.println("### Start Uninstall the Hadoop Cluster");
+	public boolean getInfo() {
+		System.out.println("### Getting the info of cluster.");
 		String cfgDir = System.getProperty("user.dir") + "/config/";
 		List<Host> hosts = getHostsFromFile(cfgDir + "hosts");
 		setHostList(hosts);
-
+		
 		if(hosts.size() < 1) {
-			System.err.println("There is no host to uninstall according the file ./config/hosts");
-			return;
+			System.err.println("There is no host exist according the file ./config/hosts");
+			return false;
 		}
-
+		
 		boolean hadoopInstalled = false;
 		boolean zkInstalled = false;
 		boolean hBaseInstalled = false;
 		
 		try {
 			for(Host h : hosts) {
+				if(!Util.ping(h.getIp(), 2000)) {
+					System.err.println("The host " + h.getIp() + " is unreachable!");
+					return false;
+				}
+				
 				h.login();
 				RemoteShell sh = h.getShell();
-
+				
 				boolean dirExist = sh.fileExists(Path.HADOOP_DISTR);
 				hadoopInstalled |= dirExist;
 				
+				boolean zkExist = false;
+				boolean hbExist = false;
+				
 				if(dirExist) {
+					if(getHadoop() == null) {
+						String ver = h.getHadoopVer();
+						Hadoop hadoop = Hadoop.get(ver);
+						
+						if(hadoop != null) {
+							String hadoopBin = sh.getCmdOutPut("which hadoop");
+							if(hadoopBin != null && !hadoopBin.isEmpty()) {
+								int index = hadoopBin.indexOf("/bin/hadoop");
+								hadoop.setHome(hadoopBin.substring(0, index));
+								hadoop.setCfgPath();
+							}
+							setHadoop(hadoop);							
+						}
+					}
+					
 					String zHome = sh.getCmdRet("ls " + Path.HADOOP_DISTR + " | grep zookeeper");
 					if(zHome != null && zHome.toLowerCase().startsWith("zookeeper")) {
 						Zookeeper.getInstance().setHome(Path.HADOOP_DISTR + "/" + zHome);
-						zkInstalled = true;
+						Zookeeper.getInstance().setCfgPath();
+						zkExist = true;
 					}
 					
 					String hBaseHome = sh.getCmdRet("ls " + Path.HADOOP_DISTR + " | grep hbase");
 					if(hBaseHome != null && hBaseHome.toLowerCase().startsWith("hbase")) {
 						HBase.getInstance().setHome(Path.HADOOP_DISTR + "/" + hBaseHome);
-						hBaseInstalled = true;
+						HBase.getInstance().setCfgPath();
+						hbExist = true;
 					}			
 				}
 				
 				h.logout();
-
-				h.isZookeeperProperty().setValue(zkInstalled);
-				h.isHBaseProperty().setValue(hBaseInstalled);
+				
+				h.isZookeeperProperty().setValue(zkExist);
+				h.isHBaseProperty().setValue(hbExist);
+				
+				zkInstalled |= zkExist;
+				hBaseInstalled |= hbExist;
 			}
 			
 			if(!hadoopInstalled) {
 				System.err.println("Hadoop is not installed on the hosts according the file ./config/hosts");
-				return;
+				return false;
 			}
 			
 			setSupportZookeeper(zkInstalled);
 			setSupportHbase(hBaseInstalled);
+			
+			prepareWork();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
 
+	/**
+	 * 卸载集群
+	 */
+	public void uninstall() {
+		System.out.println("### Start Uninstall the Hadoop Cluster");
+		
+		if(!getInfo()) {
+			return;
+		}
+		
+		try {
 			login();
 			restore();
 			logout();			

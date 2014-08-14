@@ -171,13 +171,15 @@ public abstract class Hadoop {
 	 * @return
 	 */
 	public static Hadoop get(String version) {
+		if(version == null) {
+			return null;
+		}
+		
 		if(version.startsWith(V1)) {
 			return new HadoopV1();
 		}
-		if(version.startsWith(V2)) {
-			return new HadoopV2();
-		}
-		return null;
+
+		return new HadoopV2();
 	}
 	
 	/**
