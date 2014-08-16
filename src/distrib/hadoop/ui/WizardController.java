@@ -206,6 +206,7 @@ public class WizardController extends AnchorPane implements Initializable {
     private List<GridPane> pages = new ArrayList<GridPane>();
     private DoubleProperty progress = new SimpleDoubleProperty(0);
     private Hadoop hadoop;
+    private File lastPath;
     
     /** 选择文件标题提示信息 */
     private static final String SEL_FILE_TITLE = Messages.getString("WizardController.select.file.title"); //$NON-NLS-1$
@@ -251,9 +252,14 @@ public class WizardController extends AnchorPane implements Initializable {
 		public void handle(Event arg0) {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle(Messages.getString("WizardController.select.file")); //$NON-NLS-1$
+			if(lastPath != null) {
+				fileChooser.setInitialDirectory(lastPath);
+			}
+			fileChooser.setInitialDirectory(lastPath);
 			File file = fileChooser.showOpenDialog(stage);
 			if(file != null) {
 				String path = file.getAbsolutePath();
+				lastPath = file.getParentFile();
 				text.setText(path);
 			}
 		}
