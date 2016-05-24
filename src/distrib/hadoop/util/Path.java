@@ -31,6 +31,9 @@ public class Path {
 	public static final String HBASE_ENV = "hbase-env.sh";
 	public static final String HBASE_SITE = "hbase-site.xml";
 	public static final String HBASE_REG = "regionservers";
+	
+	public static final String SPARK_ENV = "spark-env.sh";
+	public static final String SPARK_SLAVE = "slaves";
 
 	public static final String HDFS_DIR = HADOOP_DISTR + "/dir_for_hdfs"; 
 	public static final String HDFS_DIR_NAME = HDFS_DIR + "/name"; 

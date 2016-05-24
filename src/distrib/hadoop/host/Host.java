@@ -11,6 +11,8 @@ import distrib.hadoop.cluster.Cluster;
 import distrib.hadoop.cluster.HBase;
 import distrib.hadoop.cluster.Hadoop;
 import distrib.hadoop.cluster.Jre;
+import distrib.hadoop.cluster.Scala;
+import distrib.hadoop.cluster.Spark;
 import distrib.hadoop.cluster.Zookeeper;
 import distrib.hadoop.exception.AuthException;
 import distrib.hadoop.shell.RemoteShell;
@@ -118,9 +120,8 @@ public class Host {
 	}
 	
 	/**
-	 * ��װjava
+	 * 安装java
 	 * 
-	 * @param shell
 	 * @throws AuthException
 	 * @throws IOException
 	 */
@@ -132,9 +133,21 @@ public class Host {
 	}
 	
 	/**
+	 * 安装Scala
+	 * 
+	 * @throws AuthException
+	 * @throws IOException
+	 */
+	public void installScala() throws AuthException, IOException {
+		Scala scala = Scala.getInstance();
+		shell.excute("rm -fr " + scala.getHome());
+		shell.putFile(scala.getLocalPath(), scala.getInstallFile(), Path.TMP);
+		shell.excute("tar xfz " + scala.getTmpPath() + " -C " + Path.HADOOP_DISTR);
+	}
+	
+	/**
 	 * 安装Hadoop
 	 * 
-	 * @param shell
 	 * @throws AuthException
 	 * @throws IOException
 	 */
@@ -150,6 +163,23 @@ public class Host {
 
 		shell.excute("mkdir " + Path.HDFS_DIR);
 		shell.excute("mkdir " + Path.HDFS_DIR_TMP);
+	}
+	
+	/**
+	 * 安装Spark
+	 * 
+	 * @throws AuthException
+	 * @throws IOException
+	 */
+	public void installSpark() throws AuthException, IOException {
+		Spark spark = Spark.getInstance();
+		if(spark == null) {
+			System.out.println("Spark is null while install!");
+			return;
+		}
+		
+		shell.putFile(spark.getLocalPath(), spark.getInstallFile(), Path.TMP);
+		shell.excute("tar xfz " + spark.getTmpPath() + " -C " + Path.HADOOP_DISTR);
 	}
 
 	/**
@@ -217,6 +247,21 @@ public class Host {
 		Hadoop hadoop = Cluster.getInstance().getHadoop();
 		if(hadoop != null) {
 			for(String c : hadoop.getCmds()) {
+				shell.excute(c);
+			}
+		}
+	}
+	
+	/**
+	 * 配置Spark
+	 * 
+	 * @throws AuthException
+	 * @throws IOException
+	 */
+	public void configSpark() throws AuthException, IOException {
+		Spark spark = Spark.getInstance();
+		if(spark != null) {
+			for(String c : spark.getCmds()) {
 				shell.excute(c);
 			}
 		}

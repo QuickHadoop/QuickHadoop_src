@@ -36,6 +36,9 @@ public class Cluster {
 	/** HRegionServers */
 	private List<Host> hRegionList = new ArrayList<Host>();
 	
+	/** 是否支持Spark */
+	private boolean supportSpark;
+	
 	/** 是否支持HBase */
 	private boolean supportHbase;
 	
@@ -53,6 +56,9 @@ public class Cluster {
 	
 	/** HBase */
 	private HBase hBase;
+	
+	/** Spark */
+	private Spark spark;
 	
 	/** whether is setuped */
 	private boolean setUped = false;
@@ -229,6 +235,9 @@ public class Cluster {
 		if(supportHbase) {
 			setupHBase();
 		}
+		if(supportSpark) {
+			setupSpark();
+		}
 		cleanTmpDir();
 	}
 	
@@ -272,6 +281,10 @@ public class Cluster {
 			if(h.isJournalNodeProperty().getValue()) {
 				journalList.add(h);
 			}
+		}
+		
+		if(supportSpark) {
+			spark = Spark.getInstance();
 		}
 	}
 
@@ -373,6 +386,34 @@ public class Cluster {
 	}
 	
 	/**
+	 * 安装、配置Spark
+	 * 
+	 * @throws InstallException
+	 */
+	public void setupSpark() throws InstallException {
+		if(spark == null) {
+			return;
+		}
+		
+		exitCode = RemoteShell.OK;
+		spark.prepareConfig();
+		
+		List<Runnable> runList = new ArrayList<Runnable>();
+		for(final Host host : hostList) {
+			runList.add(new Runnable() {
+				@Override
+				public void run() {
+					setupSpark(host);
+				}
+			});
+		}
+		ThreadPool.Execute(runList, true);
+		if(exitCode != RemoteShell.OK) {
+			throw new InstallException(Messages.getString("Exception.spark.install.failed"));
+		}
+	}
+	
+	/**
 	 * 获取主机信息
 	 * 
 	 * @throws AuthException
@@ -409,7 +450,8 @@ public class Cluster {
 			return;
 		}
 		
-		stopHBase();			
+		nameNode.getShell().excutePtySudo(spark.stop());
+		stopHBase();	
 		nameNode.getShell().excutePtySudo("stop-all.sh");
 		stopZookeeper();			
 	}
@@ -425,7 +467,14 @@ public class Cluster {
 		
 		startZookeeper();
 		nameNode.getShell().excutePtySudo("start-all.sh");
-		startHBase();
+		
+		if(supportHbase) {
+			startHBase();			
+		}
+		
+		if(supportSpark) {			
+			startSpark();
+		}
 	}
 	
 	/**
@@ -461,6 +510,23 @@ public class Cluster {
 			
 			host.installHadoop();
 			host.configHadoop();
+		} catch (Exception e) {
+			e.printStackTrace();
+			exit(RemoteShell.FAILED);
+		}
+	}
+	
+	/**
+	 * 安装、配置Spark
+	 * 
+	 * @param host
+	 */
+	private void setupSpark(Host host) {
+		try {
+			host.installScala();
+			
+			host.installSpark();
+			host.configSpark();
 		} catch (Exception e) {
 			e.printStackTrace();
 			exit(RemoteShell.FAILED);
@@ -774,6 +840,47 @@ public class Cluster {
 	}
 	
 	/**
+	 * 启动Yarn
+	 * 
+	 * @throws AuthException
+	 * @throws IOException
+	 */
+	public void startYarn() throws InstallException {
+		exitCode = RemoteShell.OK;
+		
+		try {
+			Host nn = getNameNode();
+			if(nn == null) {
+				return;
+			}		
+			nn.getShell().excute(hadoop.startYarn());
+		} catch (Exception e) {
+			exit(RemoteShell.FAILED);
+			throw new InstallException(Messages.getString("Exception.init.failed"));
+		}
+	}
+	
+	/**
+	 * 启动Spark
+	 * 
+	 * @throws AuthException
+	 * @throws IOException
+	 */
+	public void startSpark()  {
+		exitCode = RemoteShell.OK;
+		
+		try {
+			Host nn = getNameNode();
+			if(nn == null) {
+				return;
+			}		
+			nn.getShell().excute(spark.start());
+		} catch (Exception e) {
+			exit(RemoteShell.FAILED);
+		}
+	}
+	
+	/**
 	 * 初始化HA，让NameNode1主控
 	 * 
 	 * @throws AuthException
@@ -932,6 +1039,12 @@ public class Cluster {
 		if(supportHbase) {
 			startHBase();
 		}
+		
+		startYarn();
+		
+		if(supportSpark) {
+			startSpark();			
+		}
 	}
 
 	/**
@@ -1029,6 +1142,8 @@ public class Cluster {
 		boolean installHadoop = false;
 		boolean installZK = false;
 		boolean installHBase = false;
+		boolean installScala = false;
+		boolean installSpark = false;
 		
 		String cfgDir = System.getProperty("user.dir") + "/config/";
 		File dir = new File(cfgDir);
@@ -1059,6 +1174,16 @@ public class Cluster {
 				HBase.getInstance().getFromFile(cfgDir + fn);
 				installHBase = true;
 			}
+			if(fn.toLowerCase().startsWith("scala") &&
+					fn.toLowerCase().endsWith("gz")) {
+				Scala.getInstance().getFromFile(cfgDir + fn);
+				installScala = true;
+			}
+			if(fn.toLowerCase().startsWith("spark") &&
+					fn.toLowerCase().endsWith("gz")) {
+				Scala.getInstance().getFromFile(cfgDir + fn);
+				installSpark = true;
+			}
 		}
 		
 		if(!installJre) {
@@ -1078,6 +1203,11 @@ public class Cluster {
 		
 		if(installHBase && !installZK) {
 			System.err.println("The HBase requires Zookeeper, Could not find the Zookeeper install file in the dir ./config/");
+			return;
+		}
+		
+		if(installSpark && !installScala) {
+			System.err.println("The Spark requires Scala, Could not find the Scala install file in the dir ./config/");
 			return;
 		}
 		
@@ -1114,6 +1244,7 @@ public class Cluster {
 		setSupportZookeeper(installZK);
 		setHaAutoRecover(supportHA);
 		setSupportHbase(installHBase);
+		setSupportSpark(installSpark);
 		distrib();
 		
 		System.out.println("### Install successfully! You need logout the old SSH, before login to the cluster hosts.");
@@ -1405,6 +1536,20 @@ public class Cluster {
 	 */
 	public void sethBase(HBase hBase) {
 		this.hBase = hBase;
+	}	
+	
+	/**
+	 * @return the supportSpark
+	 */
+	public boolean isSupportSpark() {
+		return supportSpark;
+	}
+
+	/**
+	 * @param supportSpark the supportSpark to set
+	 */
+	public void setSupportSpark(boolean supportSpark) {
+		this.supportSpark = supportSpark;
 	}
 
 	/**
