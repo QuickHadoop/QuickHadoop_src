@@ -46,7 +46,7 @@ public class Spark {
 	 */
 	private Spark() {
 		ver = "spark-1.5.2-bin-hadoop2.6";
-		installFile = ver + "tgz";
+		installFile = ver + ".tgz";
 		tmpPath = Path.TMP + "/" + installFile;
 		sparkHome = Path.HADOOP_DISTR + "/" + ver;
 		localPath = Util.getFullPath(installFile);
@@ -112,20 +112,20 @@ public class Spark {
 	 * @throws IOException
 	 */
 	public void configUserProfile(String userHome) {
-		cmds.add(cfgEnv("sed -i '/" + COMMENT_START + "/,/"
+		cmds.add(cfgUsrProfile("sed -i '/" + COMMENT_START + "/,/"
 				+ COMMENT_END + "/d'"));
 
-		cmds.add(cfgEnv("sed -i '/export SCALA_HOME/d'"));
-		cmds.add(cfgEnv("sed -i '/export SPARK_HOME/d'"));
+		cmds.add(cfgUsrProfile("sed -i '/export SCALA_HOME/d'"));
+		cmds.add(cfgUsrProfile("sed -i '/export SPARK_HOME/d'"));
 
-		cmds.add(cfgEnv("echo '" + COMMENT_START + "' >>"));
+		cmds.add(cfgUsrProfile("echo '" + COMMENT_START + "' >>"));
 
 		String scalaHome = Scala.getInstance().getHome();
-		cmds.add(cfgEnv("echo 'export SCALA_HOME=" + userHome + "/" + scalaHome + "' >>"));
-		cmds.add(cfgEnv("echo 'export SPARK_HOME=" + userHome + "/" + sparkHome + "' >>"));
-		cmds.add(cfgEnv("echo 'export PATH=$PATH:" + userHome + "/" + sparkHome + "/bin' >>"));
+		cmds.add(cfgUsrProfile("echo 'export SCALA_HOME=" + userHome + "/" + scalaHome + "' >>"));
+		cmds.add(cfgUsrProfile("echo 'export SPARK_HOME=" + userHome + "/" + sparkHome + "' >>"));
+		cmds.add(cfgUsrProfile("echo 'export PATH=$PATH:$SCALA_HOME/bin:$SPARK_HOME/sbin' >>"));
 
-		cmds.add(cfgEnv("echo '" + COMMENT_END + "' >>"));		
+		cmds.add(cfgUsrProfile("echo '" + COMMENT_END + "' >>"));		
 	}
 	
 	/**
@@ -146,10 +146,14 @@ public class Spark {
 		
 		cmds.add(cfgEnv("echo 'export JAVA_HOME=" + userHome + "/" + jreHome + "' >>"));
 		cmds.add(cfgEnv("echo 'export SCALA_HOME=" + userHome + "/" + scalaHome + "' >>"));
-		cmds.add(cfgEnv("echo 'export SPARK_MASTER_IP=" + nnIp + "' >>"));
 		cmds.add(cfgEnv("echo 'export SPARK_WORKER_MEMORY=512m' >>"));
 		cmds.add(cfgEnv("echo 'export HADOOP_CONF_DIR=" + hadoopCfg + "' >>"));
-		cmds.add(cfgEnv("echo 'export SPARK_DAEMON_JAVA_OPTS=-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=" + cluster.getNameNode().getHostName() + ":2181," + cluster.getSecNameNode().getHostName() + ":2181 -Dspark.deploy.zookeeper.dir=spark' >>"));
+		
+		if(cluster.isHaAutoRecover()) {
+			cmds.add(cfgEnv("echo 'export SPARK_DAEMON_JAVA_OPTS=\"-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=" + cluster.getNameNode().getHostName() + ":2181," + cluster.getSecNameNode().getHostName() + ":2181 -Dspark.deploy.zookeeper.dir=/spark\"' >>"));			
+		} else {
+			cmds.add(cfgEnv("echo 'export SPARK_MASTER_IP=" + nnIp + "' >>"));			
+		}
 
 		cmds.add(cfgEnv("echo '" + COMMENT_END + "' >>"));
 	}
@@ -159,11 +163,9 @@ public class Spark {
 	 */
 	public void cfgSlaves(List<Host> hosts) {
 		cmds.add(cfgSlaves("cat /dev/null >"));
-		cmds.add(cfgEnv("echo '" + COMMENT_START + "' >>"));
 		for(Host s : hosts) {
 			cmds.add(cfgSlaves("echo " + s.getHostName() + " >>"));		
 		}
-		cmds.add(cfgEnv("echo '" + COMMENT_END + "' >>"));
 	}
 	
 	/**
@@ -180,7 +182,16 @@ public class Spark {
 	}
 	
 	/**
-	 * 启动Zookeeper
+	 * 启动master
+	 * 
+	 * @return
+	 */
+	public String startMaster() {
+		return sparkHome + "/sbin/start-master.sh";
+	}
+	
+	/**
+	 * 启动Spark
 	 * 
 	 * @return
 	 */
@@ -189,7 +200,7 @@ public class Spark {
 	}
 	
 	/**
-	 * 停止Zookeeper
+	 * 停止Spark
 	 * 
 	 * @return
 	 */

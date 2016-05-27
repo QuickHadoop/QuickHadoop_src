@@ -102,6 +102,11 @@ public class Scala {
 		return RetNo.OK;
 	}
 	
+	
+	public static void main(String[] args) {
+		Scala.getInstance().getFromFile("./config/scala-2.11.7.tgz");
+	}
+	
 	/**
 	 * @return the ver
 	 */

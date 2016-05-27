@@ -451,9 +451,10 @@ public class Cluster {
 		}
 		
 		nameNode.getShell().excutePtySudo(spark.stop());
+		nameNode.getShell().excutePtySudo(hadoop.stopYarn());
 		stopHBase();	
-		nameNode.getShell().excutePtySudo("stop-all.sh");
-		stopZookeeper();			
+		nameNode.getShell().excutePtySudo(hadoop.stopHdfs());
+		stopZookeeper();
 	}
 	
 	/**
@@ -466,11 +467,13 @@ public class Cluster {
 		}
 		
 		startZookeeper();
-		nameNode.getShell().excutePtySudo("start-all.sh");
+		nameNode.getShell().excutePtySudo(hadoop.startHdfs());
 		
 		if(supportHbase) {
 			startHBase();			
 		}
+		
+		nameNode.getShell().excutePtySudo(hadoop.startYarn());
 		
 		if(supportSpark) {			
 			startSpark();
@@ -875,6 +878,14 @@ public class Cluster {
 				return;
 			}		
 			nn.getShell().excute(spark.start());
+			
+			/* 如果spark支持HA，则启动第二个master */
+			if(haAutoRecover) {
+				Host sn = getSecNameNode();
+				if(sn != null) {
+					sn.getShell().excute(spark.startMaster());
+				}
+			}
 		} catch (Exception e) {
 			exit(RemoteShell.FAILED);
 		}
@@ -1181,7 +1192,7 @@ public class Cluster {
 			}
 			if(fn.toLowerCase().startsWith("spark") &&
 					fn.toLowerCase().endsWith("gz")) {
-				Scala.getInstance().getFromFile(cfgDir + fn);
+				Spark.getInstance().getFromFile(cfgDir + fn);
 				installSpark = true;
 			}
 		}
@@ -1267,6 +1278,7 @@ public class Cluster {
 		boolean hadoopInstalled = false;
 		boolean zkInstalled = false;
 		boolean hBaseInstalled = false;
+		boolean sparkInstalled = false;
 		
 		try {
 			for(Host h : hosts) {
@@ -1283,6 +1295,7 @@ public class Cluster {
 				
 				boolean zkExist = false;
 				boolean hbExist = false;
+				boolean sparkExist = false;
 				
 				if(dirExist) {
 					if(getHadoop() == null) {
@@ -1313,6 +1326,13 @@ public class Cluster {
 						HBase.getInstance().setCfgPath();
 						hbExist = true;
 					}			
+					
+					String sparkHome = sh.getCmdRet("ls " + Path.HADOOP_DISTR + " | grep spark");
+					if(sparkHome != null && sparkHome.toLowerCase().startsWith("spark")) {
+						Spark.getInstance().setHome(Path.HADOOP_DISTR + "/" + sparkHome);
+						Spark.getInstance().setCfgPath();
+						sparkExist = true;
+					}			
 				}
 				
 				h.logout();
@@ -1322,6 +1342,7 @@ public class Cluster {
 				
 				zkInstalled |= zkExist;
 				hBaseInstalled |= hbExist;
+				sparkInstalled |= sparkExist;
 			}
 			
 			if(!hadoopInstalled) {
@@ -1331,6 +1352,7 @@ public class Cluster {
 			
 			setSupportZookeeper(zkInstalled);
 			setSupportHbase(hBaseInstalled);
+			setSupportSpark(sparkInstalled);
 			
 			prepareWork();
 		} catch (Exception e) {
